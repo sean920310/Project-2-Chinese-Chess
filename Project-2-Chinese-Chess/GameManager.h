@@ -9,13 +9,17 @@
 class GameManager
 {
 private:
-	std::vector<Chess*> on_board;
-	int current_player;		//1:red , 2:black
+	std::vector<Chess*> onBoard;
+	Team currentPlayer;		//1:red , 2:black
 	Board board;
 	Viewer viewer;
 	std::vector<sf::Sprite> sprites;
 public:
 	GameManager();
-	void run();
+	int menu();
+	void inGame();
+
 };
+
+
 

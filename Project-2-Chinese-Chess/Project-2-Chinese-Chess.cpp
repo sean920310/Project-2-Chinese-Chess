@@ -1,10 +1,11 @@
-﻿#include <iostream>
+﻿//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#include <iostream>
 #include "GameManager.h"
 
 int main()
 {
     GameManager game;
-    game.run();
+    game.inGame();
     //end of application
     return 0;
 }

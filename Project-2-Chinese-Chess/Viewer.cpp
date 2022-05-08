@@ -1,12 +1,7 @@
 #include "Viewer.h"
 
-#define ADVISORS_BLACK "./Asset/Image/Chess/Chess_Advisors_Black.png"
-#define ADVISORS_RED "./Asset/Image/Chess/Chess_Advisors_Red.png"
 
-
-
-
-Viewer::Viewer():board(), ev(),blackKing(Team::Black)
+Viewer::Viewer() : ev()
 {
 	this->videoMode.height = 768;
 	this->videoMode.width = 1280;
@@ -42,20 +37,26 @@ void Viewer::pollevent()
 	}
 }
 
-void Viewer::update()
+void Viewer::update(std::vector<Chess*> allChess)
 {
 	pollevent();
-	//update
+	//**update
+	//	-show if chess is select
+
+	for (auto& chess : allChess) {
+		chess->showSelect(sf::Mouse::getPosition(*this->window));
+	}
+
+
 }
 
-void Viewer::render()
+void Viewer::render(std::vector<sf::Sprite> sprites)
 {
-	
+
 	this->window->clear(sf::Color::White);
 	//draw
-	//for (auto& sprite : sprites) {
-	this->window->draw(this->board.getSprite());
-	//}
-	this->window->draw(this->blackKing.getSprite());
+	for (const auto& sprite : sprites)
+		this->window->draw(sprite);
+
 	this->window->display();
 }

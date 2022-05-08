@@ -2,17 +2,19 @@
 
 GameManager::GameManager():board(),viewer()
 {
-	//board = Board::Board();
-	current_player = 1;
+	onBoard = board.getChess();
+	currentPlayer = Team::Red;
 }
 
-void GameManager::run()
+void GameManager::inGame()
 {
-	//sprites.push_back(board.getSprite());
 	while (viewer.windowIsOpen())
 	{
-		viewer.update();
-		
-		viewer.render();
+		onBoard = board.getChess();
+		viewer.update(onBoard);
+
+		//draw
+		auto boardSprites = this->board.getAllSprite();
+		viewer.render(boardSprites);
 	}
 }

@@ -4,36 +4,37 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 
-#define CHESS_KING_BLACK     "./Asset/Image/Chess/Chess_King_Black.png"
-#define CHESS_ADVISORS_BLACK "./Asset/Image/Chess/Chess_Advisors_Black.png"
-#define CHESS_MINISTER_BLACK "./Asset/Image/Chess/Chess_Minister_Black.png"
-#define CHESS_CHARIOTS_BLACK "./Asset/Image/Chess/Chess_Chariots_Black.png"
-#define CHESS_KNIGHTS_BLACK  "./Asset/Image/Chess/Chess_Knights_Black.png"
-#define CHESS_CANNONS_BLACK  "./Asset/Image/Chess/Chess_Cannons_Black.png"
-#define CHESS_SOLDIERS_BLACK "./Asset/Image/Chess/Chess_Soldiers_Black.png"
+#define CHESS_GENERAL_BLACK     "./Asset/Image/Chess/Chess_General_Black.png"
+#define CHESS_ADVISOR_BLACK "./Asset/Image/Chess/Chess_Advisor_Black.png"
+#define CHESS_ELEPHANT_BLACK "./Asset/Image/Chess/Chess_Elephant_Black.png"
+#define CHESS_HORSE_BLACK "./Asset/Image/Chess/Chess_Horse_Black.png"
+#define CHESS_CHARIOT_BLACK  "./Asset/Image/Chess/Chess_Chariot_Black.png"
+#define CHESS_CANNON_BLACK  "./Asset/Image/Chess/Chess_Cannon_Black.png"
+#define CHESS_SOLDIER_BLACK "./Asset/Image/Chess/Chess_Soldier_Black.png"
 
-#define CHESS_KING_RED     "./Asset/Image/Chess/Chess_King_Red.png"
-#define CHESS_ADVISORS_RED "./Asset/Image/Chess/Chess_Advisors_Red.png"
-#define CHESS_MINISTER_RED "./Asset/Image/Chess/Chess_Minister_Red.png"
-#define CHESS_CHARIOTS_RED "./Asset/Image/Chess/Chess_Chariots_Red.png"
-#define CHESS_KNIGHTS_RED  "./Asset/Image/Chess/Chess_Knights_Red.png"
-#define CHESS_CANNONS_RED  "./Asset/Image/Chess/Chess_Cannons_Red.png"
-#define CHESS_SOLDIERS_RED "./Asset/Image/Chess/Chess_Soldiers_Red.png"
+#define CHESS_GENERAL_RED     "./Asset/Image/Chess/Chess_General_Red.png"
+#define CHESS_ADVISOR_RED "./Asset/Image/Chess/Chess_Advisor_Red.png"
+#define CHESS_ELEPHANT_RED "./Asset/Image/Chess/Chess_Elephant_Red.png"
+#define CHESS_HORSE_RED "./Asset/Image/Chess/Chess_Horse_Red.png"
+#define CHESS_CHARIOT_RED  "./Asset/Image/Chess/Chess_Chariot_Red.png"
+#define CHESS_CANNON_RED  "./Asset/Image/Chess/Chess_Cannon_Red.png"
+#define CHESS_SOLDIER_RED "./Asset/Image/Chess/Chess_Soldier_Red.png"
 
 #define CHECKBOARD "./Asset/Image/Checkboard/Checkboard.jpg"
 
 #define CHESS_SCALE_SIZE 0.1f
+#define CHESS_CHOISE_SCALE_SIZE 0.108f
 #define CHECKBOARD_SCALE_SIZE 0.3f
 
 enum class Characters
 {
-	King,
-	Advisors,
-	Minister,
-	Chariots,
-	Knights,
-	Cannons,
-	Soldiers,
+	General,
+	Advisor,
+	Elephant,
+	Horse,
+	Chariot,
+	Cannon,
+	Soldier,
 };
 
 enum class Team
@@ -41,3 +42,8 @@ enum class Team
 	Red,
 	Black
 };
+
+typedef struct {
+	int x;
+	int y;
+}Coord;
