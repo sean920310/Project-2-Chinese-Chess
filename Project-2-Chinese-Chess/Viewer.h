@@ -15,7 +15,11 @@ public:
 	
 	bool windowIsOpen();
 	void pollevent();
-	void update(std::vector<Chess*> allChess);
-	void render(std::vector<sf::Sprite> sprites);
+	sf::Vector2i getMousePosition();
+	void update();
+	void clear();
+	void drawCanMovePos(std::vector<Coord> coords);
+	void drawSprite(std::vector<sf::Sprite> sprites);
+	void display();
 };
 

@@ -43,7 +43,21 @@ enum class Team
 	Black
 };
 
-typedef struct {
+enum class InGameState
+{
+	start,
+	selectChess,
+	pressChess,
+	choiceMove,
+	isCheck,
+	oneSideWin
+};
+
+typedef struct Coord {
 	int x;
 	int y;
+
+	bool operator==(const Coord& rhs) {
+		return (this->x == rhs.x && this->y == rhs.y);
+	}
 }Coord;

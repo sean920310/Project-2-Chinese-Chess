@@ -26,8 +26,13 @@ private:
 
 public:
 	Board();
+	Board(const Board& rhs);
 	~Board();
+	Board& operator=(const Board& rhs);
+	void newBoard();
+	Chess* getChess(Coord coord);
 	std::vector<sf::Sprite> getAllSprite();
-	std::vector<Chess*> getChess();
+	std::vector<Chess*> getAllChess();
+	void moveChess(Coord fromCoord , Coord toCoord);
 };
 

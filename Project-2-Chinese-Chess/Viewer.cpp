@@ -37,26 +37,50 @@ void Viewer::pollevent()
 	}
 }
 
-void Viewer::update(std::vector<Chess*> allChess)
+sf::Vector2i Viewer::getMousePosition()
+{
+	return sf::Mouse::getPosition(*this->window);
+}
+
+void Viewer::update()
 {
 	pollevent();
 	//**update
-	//	-show if chess is select
 
-	for (auto& chess : allChess) {
-		chess->showSelect(sf::Mouse::getPosition(*this->window));
-	}
+	/*for (auto& chess : allChess) {
+		chess->showSelect(sf::Mouse::getPosition(*this->window), currentPlayer);
+	}*/
 
 
 }
 
-void Viewer::render(std::vector<sf::Sprite> sprites)
+void Viewer::clear()
 {
-
 	this->window->clear(sf::Color::White);
+}
+
+void Viewer::drawCanMovePos(std::vector<Coord> coords)
+{
+	for (auto coord : coords) {
+		sf::CircleShape circle(30.3);
+		float x, y;
+		x = CHECKBOARD_SCALE_SIZE * (coord.x * 233.75 + 34) + 35.0625 - CHESS_SCALE_SIZE * (606.0 / 2);
+		y = CHECKBOARD_SCALE_SIZE * (coord.y * 233.75 + 34) + 58.05 - CHESS_SCALE_SIZE * (606.0 / 2);
+		circle.setPosition(x, y);
+		circle.setFillColor(sf::Color(255, 0, 0, 127));
+		this->window->draw(circle);
+	}
+}
+
+void Viewer::drawSprite(std::vector<sf::Sprite> sprites)
+{
 	//draw
 	for (const auto& sprite : sprites)
 		this->window->draw(sprite);
 
+}
+
+void Viewer::display()
+{
 	this->window->display();
 }
