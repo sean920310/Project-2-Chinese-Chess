@@ -87,6 +87,8 @@ public:
 
 class Soldier :public Chess
 {
+protected:
+	bool isCrossRiver = false;
 public:
 	Soldier(const Team& team = Team::Black);
 	virtual void move(Board& board, Coord toCoord) override;

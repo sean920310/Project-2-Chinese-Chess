@@ -90,9 +90,12 @@ std::vector<Coord> General::coordCanMove(Board& board)
 
 bool General::moveable(Board& board, Coord toCoord)
 {
-	if (toCoord.x < 3 || toCoord.x>5 || toCoord.y > 9 || toCoord.y < 7)
+	
+	if (this->team==Team::Red&&(toCoord.x < 3 || toCoord.x>5 || toCoord.y > 9 || toCoord.y < 7))
 		return false;
-	else if(toCoord == coord)
+	else if (this->team == Team::Black && (toCoord.x < 3 || toCoord.x>5 || toCoord.y > 2 || toCoord.y < 0))
+		return false;
+	else if (toCoord == coord)
 		return false;
 	else
 	{
@@ -127,7 +130,13 @@ Advisor::Advisor(const Team& team) :Chess(team)
 
 void Advisor::move(Board& board, Coord toCoord)
 {
-	return;
+	if (this->moveable(board, toCoord)) {
+		board.moveChess(this->coord, toCoord);
+	}
+	else
+	{
+		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
+	}
 }
 
 std::vector<Coord> Advisor::coordCanMove(Board& board)
@@ -155,6 +164,13 @@ Elephant::Elephant(const Team& team) :Chess(team)
 
 void Elephant::move(Board& board, Coord toCoord)
 {
+	if (this->moveable(board, toCoord)) {
+		board.moveChess(this->coord, toCoord);
+	}
+	else
+	{
+		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
+	}
 }
 
 std::vector<Coord> Elephant::coordCanMove(Board& board)
@@ -182,6 +198,13 @@ Horse::Horse(const Team& team) :Chess(team)
 
 void Horse::move(Board& board, Coord toCoord)
 {
+	if (this->moveable(board, toCoord)) {
+		board.moveChess(this->coord, toCoord);
+	}
+	else
+	{
+		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
+	}
 }
 
 std::vector<Coord> Horse::coordCanMove(Board& board)
@@ -209,6 +232,13 @@ Chariot::Chariot(const Team& team) :Chess(team)
 
 void Chariot::move(Board& board, Coord toCoord)
 {
+	if (this->moveable(board, toCoord)) {
+		board.moveChess(this->coord, toCoord);
+	}
+	else
+	{
+		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
+	}
 }
 
 std::vector<Coord> Chariot::coordCanMove(Board& board)
@@ -235,16 +265,95 @@ Cannon::Cannon(const Team& team) :Chess(team)
 
 void Cannon::move(Board& board, Coord toCoord)
 {
+	if (this->moveable(board, toCoord)) {
+		board.moveChess(this->coord, toCoord);
+	}
+	else
+	{
+		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
+	}
 }
 
 std::vector<Coord> Cannon::coordCanMove(Board& board)
 {
-	return std::vector<Coord>();
+	std::vector<Coord> canMove;
+	for (int i = 0; i < 9; i++) {
+		if (this->moveable(board, { i,this->coord.y }))
+			canMove.push_back({ i,this->coord.y });
+	}
+	for (int i = 0; i < 10; i++) {
+		if (this->moveable(board, { this->coord.x,i }))
+			canMove.push_back({ this->coord.x,i });
+	}
+	return canMove;
 }
 
 bool Cannon::moveable(Board& board, Coord toCoord)
 {
-	return false;
+	if (toCoord.x < 0 || toCoord.x>8 || toCoord.y > 9 || toCoord.y < 0)
+		return false;
+	else if (toCoord == coord)
+		return false;
+	else
+	{
+		if ((toCoord.x - this->coord.x) && (toCoord.y - this->coord.y))	//斜向移動
+			return false;
+		else
+		{
+			bool cross = false;
+			if (toCoord.x - this->coord.x) {	//左右移動
+				int start, end;
+				if ((toCoord.x - this->coord.x) > 0) {
+					start = this->coord.x + 1;
+					end = toCoord.x;
+				}
+				else
+				{
+					start = toCoord.x + 1;
+					end = this->coord.x;
+				}
+				for (int i = start; i < end; i++) {
+					if (board.getChess({ i,toCoord.y }) != nullptr) {
+						if (cross)
+							return false;
+						else
+							cross = true;
+					}
+				}
+			}
+			else													//上下移動
+			{
+				int start, end;
+				if ((toCoord.y - this->coord.y) > 0) {
+					start = this->coord.y + 1;
+					end = toCoord.y;
+				}
+				else
+				{
+					start = toCoord.y + 1;
+					end = this->coord.y;
+				}
+				for (int i = start; i < end; i++) {
+					if (board.getChess({ toCoord.x,i }) != nullptr) {
+						if (cross)
+							return false;
+						else
+							cross = true;
+					}
+				}
+			}
+			if (board.getChess(toCoord) != nullptr) {
+				if (cross)
+					return this->team != board.getChess(toCoord)->getTeam();
+				else
+					return false;
+			}
+			else
+			{
+				return !cross;
+			}
+		}
+	}
 }
 
 //==================================================Soldier==================================================
@@ -261,15 +370,83 @@ Soldier::Soldier(const Team& team) :Chess(team)
 
 void Soldier::move(Board& board, Coord toCoord)
 {
+	if (this->moveable(board, toCoord)) {
+		board.moveChess(this->coord, toCoord);
+		if (this->team == Team::Red) {
+			if (toCoord.y < 5)
+				this->isCrossRiver = true;
+		}
+		else
+		{
+			if (toCoord.y > 4)
+				this->isCrossRiver = true;
+		}
+	}
+	else
+	{
+		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
+	}
 }
 
 std::vector<Coord> Soldier::coordCanMove(Board& board)
 {
-	return std::vector<Coord>();
+	std::vector<Coord> canMove;
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			if (this->moveable(board, { this->coord.x + i,this->coord.y + j }))
+				canMove.push_back({ this->coord.x + i,this->coord.y + j });
+		}
+	}
+	return canMove;
 }
 
 bool Soldier::moveable(Board& board, Coord toCoord)
 {
-	return false;
+	if (toCoord == coord)
+		return false;
+	if (!(this->isCrossRiver) && abs(toCoord.x - this->coord.x))
+		return false;
+	if (this->team == Team::Red) {
+		if (toCoord.x < 0 || toCoord.x>8 || toCoord.y > 6 || toCoord.y < 0)
+			return false;
+		else
+		{
+			if (abs(toCoord.x - this->coord.x) > 1 || abs(toCoord.y - this->coord.y) > 1 || (toCoord.y - this->coord.y) > 0)
+				return false;
+			if (abs(toCoord.x - this->coord.x) && abs(toCoord.y - this->coord.y))
+				return false;
+			if (board.getChess(toCoord) != nullptr) {
+				if (board.getChess(toCoord)->getTeam() != this->team)
+					return true;
+				else
+					return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
+	else {
+		if (toCoord.x < 0 || toCoord.x>8 || toCoord.y > 9 || toCoord.y < 3)
+			return false;
+		else
+		{
+			if (abs(toCoord.x - this->coord.x) > 1 || abs(toCoord.y - this->coord.y) > 1 || (toCoord.y - this->coord.y) < 0)
+				return false;
+			if (abs(toCoord.x - this->coord.x) && abs(toCoord.y - this->coord.y))
+				return false;
+			if (board.getChess(toCoord) != nullptr) {
+				if (board.getChess(toCoord)->getTeam() != this->team)
+					return true;
+				else
+					return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
 }
 
