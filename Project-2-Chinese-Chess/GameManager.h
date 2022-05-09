@@ -7,6 +7,8 @@
 #include "Chess.h"
 #include "Viewer.h"
 
+bool isChoiceToMove(sf::Vector2i mouseCoord, Coord coord);
+
 class GameManager
 {
 private:

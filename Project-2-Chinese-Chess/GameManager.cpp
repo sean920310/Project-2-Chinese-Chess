@@ -11,6 +11,8 @@ bool isChoiceToMove(sf::Vector2i mouseCoord, Coord coord) {
 }
 
 
+
+
 //class
 GameManager::GameManager():board(),viewer()
 {
@@ -79,6 +81,7 @@ void GameManager::inGame()
 
 		//====================================================isCheck===================================================	**judge if one side is check or win
 		case InGameState::isCheck:
+
 			state = InGameState::selectChess;
 
 			if (currentPlayer == Team::Red)

@@ -48,6 +48,11 @@ Team Chess::getTeam()
 	return team;
 }
 
+Characters Chess::getCharacter()
+{
+	return this->charater;
+}
+
 bool Chess::isChoice()
 {
 	return isSelect;
@@ -57,6 +62,7 @@ bool Chess::isChoice()
 
 General::General(const Team& team) :Chess(team)
 {
+	this->charater = Characters::General;
 	if (team == Team::Black)
 		chessTexture.loadFromFile(CHESS_GENERAL_BLACK);
 	else
@@ -120,6 +126,7 @@ bool General::moveable(Board& board, Coord toCoord)
 
 Advisor::Advisor(const Team& team) :Chess(team)
 {
+	this->charater = Characters::Advisor;
 	if (team == Team::Black)
 		chessTexture.loadFromFile(CHESS_ADVISOR_BLACK);
 	else
@@ -182,6 +189,7 @@ bool Advisor::moveable(Board& board, Coord toCoord)
 
 Elephant::Elephant(const Team& team) :Chess(team)
 {
+	this->charater = Characters::Elephant;
 	if (team == Team::Black)
 		chessTexture.loadFromFile(CHESS_ELEPHANT_BLACK);
 	else
@@ -215,7 +223,44 @@ std::vector<Coord> Elephant::coordCanMove(Board& board)
 
 bool Elephant::moveable(Board& board, Coord toCoord)
 {
-	return false;
+	Coord tempCoord = toCoord;
+	tempCoord.x -= (toCoord.x - this->coord.x) / 2;
+	tempCoord.y -= (toCoord.y - this->coord.y) / 2;
+
+
+	if (toCoord == coord) {
+		return false;
+	}
+	else if (toCoord.x < 0 || toCoord.x>8 || toCoord.y < 0 || toCoord.y>9) {
+		return false;
+	}
+	else if ((2 != abs(toCoord.x - this->coord.x)) || (2 != abs(toCoord.y - this->coord.y))) {
+		return false;
+	}
+	else if (board.getChess(tempCoord) != nullptr)
+	{
+		return false;
+	}
+	else if (this->team == Team::Black && toCoord.y > 4)
+	{
+		return false;
+	}
+	else if (this->team != Team::Black && toCoord.y < 5)
+	{
+		return false;
+	}
+	else {
+		if (board.getChess(toCoord) != nullptr) {
+			if (board.getChess(toCoord)->getTeam() != this->team)
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
 }
 
 
@@ -223,6 +268,7 @@ bool Elephant::moveable(Board& board, Coord toCoord)
 
 Horse::Horse(const Team& team) :Chess(team)
 {
+	this->charater = Characters::Horse;
 	if (team == Team::Black)
 		chessTexture.loadFromFile(CHESS_HORSE_BLACK);
 	else
@@ -256,7 +302,45 @@ std::vector<Coord> Horse::coordCanMove(Board& board)
 
 bool Horse::moveable(Board& board, Coord toCoord)
 {
-	return false;
+	Coord tempCoord = this->coord;
+	int xdif = toCoord.x - this->coord.x;
+	int ydif = toCoord.y - this->coord.y;
+	int dif = abs(xdif) - abs(ydif);
+	if (abs(xdif) > abs(ydif)) {
+		tempCoord.x += xdif / 2;
+	}
+	else
+	{
+		tempCoord.y += ydif / 2;
+	}
+
+
+	if (toCoord == coord) {
+		return false;
+	}
+	else if (toCoord.x < 0 || toCoord.x>8 || toCoord.y < 0 || toCoord.y>9) {
+		return false;
+	}
+
+	else if (abs(dif) != 1 || dif == 0 || ydif == 0 || xdif == 0) {
+		return false;
+	}
+	else if (board.getChess(tempCoord) != nullptr)
+	{
+		return false;
+	}
+	else {
+		if (board.getChess(toCoord) != nullptr) {
+			if (board.getChess(toCoord)->getTeam() != this->team)
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
 }
 
 
@@ -264,6 +348,7 @@ bool Horse::moveable(Board& board, Coord toCoord)
 
 Chariot::Chariot(const Team& team) :Chess(team)
 {
+	this->charater = Characters::Chariot;
 	if (team == Team::Black)
 		chessTexture.loadFromFile(CHESS_CHARIOT_BLACK);
 	else
@@ -359,6 +444,7 @@ bool Chariot::moveable(Board& board, Coord toCoord)
 
 Cannon::Cannon(const Team& team) :Chess(team)
 {
+	this->charater = Characters::Cannon;
 	if (team == Team::Black)
 		chessTexture.loadFromFile(CHESS_CANNON_BLACK);
 	else
@@ -464,6 +550,7 @@ bool Cannon::moveable(Board& board, Coord toCoord)
 
 Soldier::Soldier(const Team& team) :Chess(team)
 {
+	this->charater = Characters::Soldier;
 	if (team == Team::Black)
 		chessTexture.loadFromFile(CHESS_SOLDIER_BLACK);
 	else

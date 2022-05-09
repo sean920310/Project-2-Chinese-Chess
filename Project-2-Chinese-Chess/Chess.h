@@ -11,6 +11,7 @@ protected:
 	sf::Texture chessTexture;
 	sf::Sprite chess;
 	Coord coord;
+	Characters charater;
 	bool isSelect = false;
 public:
 	//constructor
@@ -22,7 +23,9 @@ public:
 	sf::Sprite getSprite();
 	Coord getCoord();
 	Team getTeam();
+	Characters getCharacter();
 	bool isChoice();
+
 
 	//move function
 	virtual void move(Board& board, Coord toCoord) = 0;
