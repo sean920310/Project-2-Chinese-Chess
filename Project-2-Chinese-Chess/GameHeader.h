@@ -57,6 +57,21 @@ typedef struct Coord {
 	int x;
 	int y;
 
+	Coord():x(0),y()
+	{
+	}
+
+	Coord(const Coord& rhs) {
+		this->x = rhs.x;
+		this->y = rhs.y;
+	}
+
+	Coord& operator=(const Coord& rhs) {
+		this->x = rhs.x;
+		this->y = rhs.y;
+		return *this;
+	}
+
 	bool operator==(const Coord& rhs) {
 		return (this->x == rhs.x && this->y == rhs.y);
 	}

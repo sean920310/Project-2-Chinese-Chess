@@ -215,7 +215,7 @@ std::vector<Coord> Elephant::coordCanMove(Board& board)
 
 bool Elephant::moveable(Board& board, Coord toCoord)
 {
-	return true;
+	return false;
 }
 
 
