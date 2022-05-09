@@ -17,8 +17,8 @@ void Chess::setPosition(Coord coord)
 void Chess::showSelect(sf::Vector2i mouseCoord, Team team)
 {
 	sf::IntRect chessRect = this->chess.getTextureRect();
-	chessRect.left += this->chess.getPosition().x;
-	chessRect.top += this->chess.getPosition().y;
+	chessRect.left = this->chess.getPosition().x;
+	chessRect.top = this->chess.getPosition().y;
 	chessRect.height *= CHESS_SCALE_SIZE;
 	chessRect.width *= CHESS_SCALE_SIZE;
 
@@ -141,12 +141,40 @@ void Advisor::move(Board& board, Coord toCoord)
 
 std::vector<Coord> Advisor::coordCanMove(Board& board)
 {
-	return std::vector<Coord>();
+
+	std::vector<Coord> canMove;
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			if (this->moveable(board, { this->coord.x + i,this->coord.y + j }))
+				canMove.push_back({ this->coord.x + i,this->coord.y + j });
+		}
+	}
+	return canMove;
 }
 
 bool Advisor::moveable(Board& board, Coord toCoord)
 {
-	return false;
+	if (this->team == Team::Red && (toCoord.x < 3 || toCoord.x>5 || toCoord.y > 9 || toCoord.y < 7))
+		return false;
+	else if (this->team == Team::Black && (toCoord.x < 3 || toCoord.x>5 || toCoord.y > 2 || toCoord.y < 0))
+		return false;
+	else if (toCoord == coord)
+		return false;
+	else if ((1 != abs(toCoord.x - this->coord.x)) || (1 != abs(toCoord.y - this->coord.y))) {
+		return false;
+	}
+	else {
+		if (board.getChess(toCoord) != nullptr) {
+			if (board.getChess(toCoord)->getTeam() != this->team)
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
 }
 
 
@@ -175,12 +203,19 @@ void Elephant::move(Board& board, Coord toCoord)
 
 std::vector<Coord> Elephant::coordCanMove(Board& board)
 {
-	return std::vector<Coord>();
+	std::vector<Coord> canMove;
+	for (int i = -2; i <= 2; i+=4) {
+		for (int j = -2; j <= 2; j+=4) {
+			if (this->moveable(board, { this->coord.x + i,this->coord.y + j }))
+				canMove.push_back({ this->coord.x + i,this->coord.y + j });
+		}
+	}
+	return canMove;
 }
 
 bool Elephant::moveable(Board& board, Coord toCoord)
 {
-	return false;
+	return true;
 }
 
 
@@ -209,7 +244,14 @@ void Horse::move(Board& board, Coord toCoord)
 
 std::vector<Coord> Horse::coordCanMove(Board& board)
 {
-	return std::vector<Coord>();
+	std::vector<Coord> canMove;
+	for (int i = -2; i <= 2; i ++) {
+		for (int j = -2; j <= 2; j ++) {
+			if (this->moveable(board, { this->coord.x + i,this->coord.y + j }))
+				canMove.push_back({ this->coord.x + i,this->coord.y + j });
+		}
+	}
+	return canMove;
 }
 
 bool Horse::moveable(Board& board, Coord toCoord)
@@ -243,12 +285,74 @@ void Chariot::move(Board& board, Coord toCoord)
 
 std::vector<Coord> Chariot::coordCanMove(Board& board)
 {
-	return std::vector<Coord>();
+	std::vector<Coord> canMove;
+	for (int i = 0; i < 9; i++) {
+		if (this->moveable(board, { i,this->coord.y }))
+			canMove.push_back({ i,this->coord.y });
+	}
+	for (int i = 0; i < 10; i++) {
+		if (this->moveable(board, { this->coord.x,i }))
+			canMove.push_back({ this->coord.x,i });
+	}
+	return canMove;
 }
 
 bool Chariot::moveable(Board& board, Coord toCoord)
 {
-	return false;
+	if (toCoord.x < 0 || toCoord.x>8 || toCoord.y > 9 || toCoord.y < 0)
+		return false;
+	else if (toCoord == coord)
+		return false;
+	else
+	{
+		if ((toCoord.x - this->coord.x) && (toCoord.y - this->coord.y))	//斜向移動
+			return false;
+		else
+		{
+			if (toCoord.x - this->coord.x) {	//左右移動
+				int start, end;
+				if ((toCoord.x - this->coord.x) > 0) {
+					start = this->coord.x + 1;
+					end = toCoord.x;
+				}
+				else
+				{
+					start = toCoord.x + 1;
+					end = this->coord.x;
+				}
+				for (int i = start; i < end; i++) {
+					if (board.getChess({ i,toCoord.y }) != nullptr) {
+						return false;
+					}
+				}
+			}
+			else													//上下移動
+			{
+				int start, end;
+				if ((toCoord.y - this->coord.y) > 0) {
+					start = this->coord.y + 1;
+					end = toCoord.y;
+				}
+				else
+				{
+					start = toCoord.y + 1;
+					end = this->coord.y;
+				}
+				for (int i = start; i < end; i++) {
+					if (board.getChess({ toCoord.x,i }) != nullptr) {
+						return false;
+					}
+				}
+			}
+			if (board.getChess(toCoord) != nullptr) {
+				return this->team != board.getChess(toCoord)->getTeam();
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
 }
 
 //==================================================Cannon==================================================
@@ -404,6 +508,15 @@ bool Soldier::moveable(Board& board, Coord toCoord)
 {
 	if (toCoord == coord)
 		return false;
+	if (this->team == Team::Red) {
+		if (this->coord.y < 5)
+			this->isCrossRiver = true;
+	}
+	else
+	{
+		if (this->coord.y > 4)
+			this->isCrossRiver = true;
+	}
 	if (!(this->isCrossRiver) && abs(toCoord.x - this->coord.x))
 		return false;
 	if (this->team == Team::Red) {

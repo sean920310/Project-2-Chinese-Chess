@@ -270,7 +270,15 @@ std::vector<Chess*> Board::getAllChess()
 
 void Board::moveChess(Coord fromCoord, Coord toCoord)
 {
-	//todo
+	this->boardArr[fromCoord.x][fromCoord.y]->setPosition(toCoord);
+
+	auto temp = this->boardArr[fromCoord.x][fromCoord.y];
+	if (this->getChess(toCoord) != nullptr)
+		delete this->boardArr[toCoord.x][toCoord.y];
+
+	this->boardArr[toCoord.x][toCoord.y] = temp;
+	this->boardArr[fromCoord.x][fromCoord.y] = nullptr;
+	
 }
 
 
