@@ -6,8 +6,10 @@ Viewer::Viewer() : ev()
 	this->videoMode.height = 768;
 	this->videoMode.width = 1280;
 
-	this->window = new sf::RenderWindow(this->videoMode, "Chinese Chess", sf::Style::Close | sf::Style::Titlebar);
+	this->window = new sf::RenderWindow(this->videoMode, L"Chinese Chess中國象棋", sf::Style::Close | sf::Style::Titlebar);
 	this->window->setFramerateLimit(60);
+	
+	font.loadFromFile(FONT_PATH);
 }
 
 Viewer::~Viewer()
@@ -45,18 +47,71 @@ sf::Vector2i Viewer::getMousePosition()
 void Viewer::update()
 {
 	pollevent();
-	//**update
-
-	/*for (auto& chess : allChess) {
-		chess->showSelect(sf::Mouse::getPosition(*this->window), currentPlayer);
-	}*/
-
-
 }
 
 void Viewer::clear()
 {
 	this->window->clear(sf::Color::White);
+}
+
+void Viewer::showCheck(Team team)
+{
+	if (team == Team::Red) {
+		sf::Text redCheck(L"紅方將軍!!",font);
+		redCheck.setCharacterSize(40);
+		//redCheck.setStyle(sf::Text::Bold);
+		redCheck.setFillColor(sf::Color::Black);
+		redCheck.setPosition(sf::Vector2f(700.f, 382. + 60.f));
+		this->window->draw(redCheck);
+	}
+	else
+	{
+
+		sf::Text blackCheck(L"黑方將軍!!", font);
+		blackCheck.setCharacterSize(40);
+		//blackCheck.setStyle(sf::Text::Bold);
+		blackCheck.setFillColor(sf::Color::Black);
+		blackCheck.setPosition(sf::Vector2f(700.f, .0 + 60.f));
+		this->window->draw(blackCheck);
+	}
+
+}
+
+void Viewer::showWinner(Team team)
+{
+
+
+}
+
+void Viewer::drawRightSideObject(Team team)
+{
+	//draw text
+	sf::Text red(L"紅方", font);
+	red.setCharacterSize(50);
+	red.setStyle(sf::Text::Bold);
+	red.setFillColor(sf::Color::Red);
+
+	sf::Text black(red);
+	black.setString(L"黑方");
+	black.setFillColor(sf::Color::Black);
+	black.setPosition(sf::Vector2f(700.f, .0f));
+	red.setPosition(sf::Vector2f(700.f, 382.f));
+	this->window->draw(red);
+	this->window->draw(black);
+
+	//draw current player
+	sf::CircleShape showCurrentTeam(10.f);
+	showCurrentTeam.setFillColor(sf::Color::Red);
+	if (team == Team::Red) {
+		showCurrentTeam.setPosition(sf::Vector2f(660.f, 407.f));
+	}
+	else
+	{
+		showCurrentTeam.setPosition(sf::Vector2f(660.f, 25.f));
+	}
+	this->window->draw(showCurrentTeam);
+
+
 }
 
 void Viewer::drawCanMovePos(std::vector<Coord> coords)
@@ -82,5 +137,6 @@ void Viewer::drawSprite(std::vector<sf::Sprite> sprites)
 
 void Viewer::display()
 {
+	
 	this->window->display();
 }

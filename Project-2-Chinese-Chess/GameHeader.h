@@ -22,6 +22,8 @@
 
 #define CHECKBOARD "./Asset/Image/Checkboard/Checkboard.jpg"
 
+#define FONT_PATH "./Asset/Font/kaiu.ttf"
+
 #define CHESS_SCALE_SIZE 0.1f
 #define CHESS_CHOISE_SCALE_SIZE 0.108f
 #define CHECKBOARD_SCALE_SIZE 0.3f

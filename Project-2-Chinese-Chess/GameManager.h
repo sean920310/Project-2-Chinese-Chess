@@ -17,10 +17,12 @@ private:
 	Board board;
 	Viewer viewer;
 	std::vector<sf::Sprite> sprites;
-public:
+
+public:	
 	GameManager();
 	int menu();
 	void inGame();
+	bool endGame(Team team);
 
 };
 
