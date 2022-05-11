@@ -48,6 +48,7 @@ enum class Team
 enum class InGameState
 {
 	start,
+	inputFile,
 	selectChess,
 	pressChess,
 	choiceMove,
@@ -82,3 +83,8 @@ typedef struct Coord {
 		return (this->x == rhs.x && this->y == rhs.y);
 	}
 }Coord;
+
+#define WIN32_LEAN_AND_MEAN
+#include <shobjidl.h> 
+#include <windows.h>
+

@@ -1,6 +1,8 @@
 #pragma once
 #include<vector>
 #include<iostream>
+#include <fstream>
+#include <string>
 
 #include"GameHeader.h"
 #include "Board.h"
@@ -21,7 +23,8 @@ private:
 public:	
 	GameManager();
 	int menu();
-	void inGame();
+	void readFile();
+	void inGame(InGameState state);
 	bool endGame(Team team);
 
 };

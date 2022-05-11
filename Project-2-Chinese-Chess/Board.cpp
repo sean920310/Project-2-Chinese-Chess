@@ -133,11 +133,15 @@ Board& Board::operator=(const Board& rhs)
 
 void Board::newBoard()
 {
-	//initialize checkboard
-	checkBoardTexture.loadFromFile(CHECKBOARD);
-	checkBoard.setTexture(checkBoardTexture);
-	checkBoard.setPosition(sf::Vector2f(35.0625f, 58.05f));
-	checkBoard.setScale(sf::Vector2f(CHECKBOARD_SCALE_SIZE, CHECKBOARD_SCALE_SIZE));
+	//clear old board
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 9; j++) {
+			if (boardArr[j][i] != nullptr) {
+				delete boardArr[j][i];
+				boardArr[j][i] = nullptr;
+			}
+		}
+	}
 
 	//initialize chess
 	General* blackGeneral, * redGeneral;
@@ -268,7 +272,7 @@ std::vector<Chess*> Board::getAllChess()
 	return chessOnBoard;
 }
 
-void Board::moveChess(Coord fromCoord, Coord toCoord)
+void Board::moveChess(const Coord& fromCoord, const Coord& toCoord)
 {
 	this->boardArr[fromCoord.x][fromCoord.y]->setPosition(toCoord);
 

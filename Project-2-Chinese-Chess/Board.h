@@ -33,6 +33,6 @@ public:
 	Chess* getChess(Coord coord);
 	std::vector<sf::Sprite> getAllSprite();
 	std::vector<Chess*> getAllChess();
-	void moveChess(Coord fromCoord , Coord toCoord);
+	void moveChess(const Coord& fromCoord, const Coord& toCoord);
 };
 
