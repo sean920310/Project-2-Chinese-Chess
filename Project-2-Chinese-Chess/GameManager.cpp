@@ -6,15 +6,15 @@ bool isChoiceToMove(sf::Vector2i mouseCoord, Coord coord) {
 	float x, y;
 	x = CHECKBOARD_SCALE_SIZE * (coord.x * 233.75 + 34) + 35.0625 - CHESS_SCALE_SIZE * (606.0 / 2);
 	y = CHECKBOARD_SCALE_SIZE * (coord.y * 233.75 + 34) + 58.05 - CHESS_SCALE_SIZE * (606.0 / 2);
-	sf::IntRect circle(x,y,60,60);
+	sf::IntRect circle(x, y, 60, 60);
 	return circle.contains(mouseCoord);
 }
 
-bool oneSideIsCheck(Board& board,Team& team) {
+bool oneSideIsCheck(Board& board, Team& team) {
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 10; j++) {
 			if (board.getChess({ i,j }) != nullptr) {
-				auto canMovePosCoord =  board.getChess({ i,j })->coordCanMove(board);
+				auto canMovePosCoord = board.getChess({ i,j })->coordCanMove(board);
 				for (const auto& coord : canMovePosCoord) {
 					if (board.getChess(coord) != nullptr) {
 						if (board.getChess(coord)->getCharacter() == Characters::General) {
@@ -45,7 +45,7 @@ bool oneSideIsWin(Board& board, Team& team) {
 						team = Team::Black;
 						blackAlive = true;
 					}
-				}			
+				}
 			}
 		}
 	}
@@ -82,7 +82,7 @@ void openFile(std::fstream& file) {
 					if (SUCCEEDED(hr))
 					{
 						//MessageBoxW(NULL, pszFilePath, L"File Path", MB_OK);
-						std::fstream file(pszFilePath, std::ios::in);
+						std::fstream file(pszFilePath, std::ios::in | std::ios::out);
 						CoTaskMemFree(pszFilePath);
 					}
 					pItem->Release();
@@ -94,11 +94,17 @@ void openFile(std::fstream& file) {
 	}
 }
 
+
 //class
-GameManager::GameManager():board(),viewer()
+GameManager::GameManager() :board(), viewer()
 {
 	onBoard = board.getAllChess();
 	currentPlayer = Team::Red;
+}
+
+GameManager::~GameManager()
+{
+	file.close();
 }
 
 int GameManager::menu()	//0:exit game 1:start new game 2:select a file
@@ -132,8 +138,10 @@ int GameManager::menu()	//0:exit game 1:start new game 2:select a file
 }
 
 void GameManager::readFile() {
+	this->board.newBoard();
 	//open file
-	std::fstream file;
+	if (this->file.is_open())
+		this->file.close();
 
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 		COINIT_DISABLE_OLE1DDE);
@@ -164,7 +172,8 @@ void GameManager::readFile() {
 					if (SUCCEEDED(hr))
 					{
 						//MessageBoxW(NULL, pszFilePath, L"File Path", MB_OK);
-						file.open(pszFilePath, std::ios::in);
+						this->file.open(pszFilePath, std::ios::in );	//need to convert everything to wchar_t!!!!!!!!!!
+						this->filePath = pszFilePath;
 						CoTaskMemFree(pszFilePath);
 					}
 					pItem->Release();
@@ -174,32 +183,38 @@ void GameManager::readFile() {
 		}
 		CoUninitialize();
 	}
-	
+	if (this->file.peek() == std::ifstream::traits_type::eof()) {
+		throw "File open error";
+	}
+
 	//read file
-	std::string dump,player,x1,y1,x2,y2;	//Player: 1, Action: Cannon (7, 7) -> (7, 5)
-	
+	file.seekp(0);
+	std::string dump, player, x1, y1, x2, y2;	//ex. Player: 1, Action: Cannon (7, 7) -> (7, 5)
+
 	while (!file.eof())
 	{
 		file >> dump >> player >> dump >> dump >> x1 >> y1 >> dump >> x2 >> y2;
-		if (file.eof())
+		if (file.eof()) {
 			return;
-		std::cout << player << std::endl << x1 << std::endl << y1 << std::endl << x2 << std::endl << y2<< std::endl;
+		}
+		std::cout << player << std::endl << x1 << std::endl << y1 << std::endl << x2 << std::endl << y2 << std::endl;
+
 		Coord from(int(x1[1] - '0'), int(y1[0] - '0')), to(int(x2[1] - '0'), int(y2[0] - '0'));
 		board.moveChess(from, to);
+		if (player[0] == '1')
+			currentPlayer = Team::Red;
+		else
+			currentPlayer = Team::Black;
 	}
-	if (player[0] == '1')
-		currentPlayer = Team::Red;
-	else
-		currentPlayer = Team::Black;
 }
 
 void GameManager::inGame(InGameState state)
 {
 
 	std::vector<Coord> canMovePosCoord;
-	Coord coordChoiseChess,coordChoiseToMove;
-	bool isCheck=false;
-	Team teamCheck=Team::Black,teamWin = Team::Black;
+	Coord coordChoiseChess, coordChoiseToMove;
+	bool isCheck = false;
+	Team teamCheck = Team::Black, teamWin = Team::Black;
 
 	while (viewer.windowIsOpen())
 	{
@@ -207,8 +222,9 @@ void GameManager::inGame(InGameState state)
 
 		switch (state)
 		{
-		//======================================================start====================================================	**start a new game
-		case InGameState::start: 
+			//======================================================start====================================================	**start a new game
+		case InGameState::start:
+			this->file.close();
 			this->board.newBoard();
 			onBoard = board.getAllChess();
 			currentPlayer = Team::Red;
@@ -216,15 +232,15 @@ void GameManager::inGame(InGameState state)
 			state = InGameState::selectChess;
 			break;
 
-		//====================================================inputFile==================================================	**start a game with input file
+			//====================================================inputFile==================================================	**start a game with input file
 		case InGameState::inputFile:
 			state = InGameState::oneSideWin;
 			break;
-		//====================================================selectChess================================================	**wait for press a object
+			//====================================================selectChess================================================	**wait for press a object
 		case InGameState::selectChess:
 			for (auto& chess : onBoard) {
-				chess->showSelect(viewer.getMousePosition(),currentPlayer);
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&&chess->isChoice()&&currentPlayer==chess->getTeam()) {
+				chess->showSelect(viewer.getMousePosition(), currentPlayer);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && chess->isChoice() && currentPlayer == chess->getTeam()) {
 					state = InGameState::pressChess;
 					break;
 				}
@@ -241,7 +257,7 @@ void GameManager::inGame(InGameState state)
 			}
 			break;
 
-		//====================================================pressChess================================================	**show the coord can move to
+			//====================================================pressChess================================================	**show the coord can move to
 		case InGameState::pressChess:
 			for (auto& chess : onBoard) {
 				if (chess->isChoice()) {
@@ -255,14 +271,15 @@ void GameManager::inGame(InGameState state)
 			}
 			break;
 
-		//====================================================choiceMove================================================	**move the chess
+			//====================================================choiceMove================================================	**move the chess
 		case InGameState::choiceMove:
 			//board.getChess(coordChoiseChess)->move(board,coordChoiseToMove);
+			this->logFile(coordChoiseChess, coordChoiseToMove);
 			board.moveChess(coordChoiseChess, coordChoiseToMove);
 			state = InGameState::oneSideWin;
 			break;
 
-		//====================================================isCheck===================================================	**judge if one side is check or win
+			//====================================================isCheck===================================================	**judge if one side is check or win
 		case InGameState::isCheck:
 			if (oneSideIsCheck(board, teamCheck)) {
 				isCheck = true;
@@ -272,14 +289,14 @@ void GameManager::inGame(InGameState state)
 				isCheck = false;
 			}
 			state = InGameState::selectChess;
-			
+
 			if (currentPlayer == Team::Red)
 				currentPlayer = Team::Black;
 			else
 				currentPlayer = Team::Red;
 			break;
 
-		//==================================================oneSideWin==================================================	**decide to play anthor game
+			//==================================================oneSideWin==================================================	**decide to play anthor game
 		case InGameState::oneSideWin:
 			if (oneSideIsWin(board, teamWin)) {
 				if (this->endGame(teamWin))
@@ -303,7 +320,7 @@ void GameManager::inGame(InGameState state)
 		viewer.drawSprite(boardSprites);
 		viewer.drawCanMovePos(canMovePosCoord);
 		viewer.drawRightSideObject(currentPlayer);
-		if(isCheck)
+		if (isCheck)
 			viewer.showCheck(teamCheck);
 		viewer.display();
 	}
@@ -337,4 +354,61 @@ bool GameManager::endGame(Team teamWin)
 		viewer.display();
 	}
 	return false;
+}
+
+void GameManager::logFile(Coord from,Coord to) {
+	if (!file.is_open()) {
+		std::wstring filePathName;
+		char nowTime[100];
+		time_t now = time(nullptr);
+		struct tm tm_info;
+		localtime_s(&tm_info,&now);
+		strftime(nowTime, 100, "%Y%m%d%H%M%S", &tm_info);
+		std::string str(nowTime);
+		
+		filePathName = L"./log_" + std::wstring(str.begin(),str.end())+L".txt";
+		
+		file.open(filePathName, std::ios::out);
+		filePath = filePathName;
+	}
+	else
+	{
+		file.close();
+		file.open(filePath, std::ios::app);
+	}
+	int player;
+	if (this->currentPlayer == Team::Red)
+		player = 1;
+	else
+		player = 2;
+
+	std::string character;
+	switch (this->board.getChess(from)->getCharacter())
+	{
+	case Characters::General:
+		character = "General";
+		break;
+	case Characters::Advisor:
+		character = "Advisor";
+		break;
+	case Characters::Elephant:
+		character = "Elephant";
+		break;
+	case Characters::Horse:
+		character = "Horse";
+		break;
+	case Characters::Chariot:
+		character = "Chariot";
+		break;
+	case Characters::Cannon:
+		character = "Cannon";
+		break;
+	case Characters::Soldier:
+		character = "Soldier";
+		break;
+	default:
+		break;
+	}
+
+	file << "Player: " << player << ", Action: " << character << " (" << from.x << ", " << from.y << ") -> (" << to.x << ", " << to.y << ")\n";
 }

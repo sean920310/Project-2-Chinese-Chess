@@ -16,7 +16,15 @@ int main()
             game.inGame(InGameState::start);
             break;
         case 2:
-            game.readFile();
+            try
+            {
+                game.readFile();
+            }
+            catch (const char* e)
+            {
+                std::cout << e<<std::endl;
+                break;
+            }
             game.inGame(InGameState::inputFile);
             break;
         default:

@@ -154,7 +154,6 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Chess.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="Log.cpp" />
     <ClCompile Include="Project-2-Chinese-Chess.cpp" />
     <ClCompile Include="Viewer.cpp" />
   </ItemGroup>
@@ -163,7 +162,6 @@
     <ClInclude Include="Chess.h" />
     <ClInclude Include="GameHeader.h" />
     <ClInclude Include="GameManager.h" />
-    <ClInclude Include="Log.h" />
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>

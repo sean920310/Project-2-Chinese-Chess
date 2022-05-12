@@ -4,6 +4,10 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 
+#define WIN32_LEAN_AND_MEAN
+#include <shobjidl.h> 
+#include <windows.h>
+
 #define CHESS_GENERAL_BLACK     "./Asset/Image/Chess/Chess_General_Black.png"
 #define CHESS_ADVISOR_BLACK "./Asset/Image/Chess/Chess_Advisor_Black.png"
 #define CHESS_ELEPHANT_BLACK "./Asset/Image/Chess/Chess_Elephant_Black.png"
@@ -83,8 +87,4 @@ typedef struct Coord {
 		return (this->x == rhs.x && this->y == rhs.y);
 	}
 }Coord;
-
-#define WIN32_LEAN_AND_MEAN
-#include <shobjidl.h> 
-#include <windows.h>
 
