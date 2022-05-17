@@ -9,7 +9,7 @@ Viewer::Viewer() : ev()
 
 	this->window = new sf::RenderWindow(this->videoMode, L"Chinese Chess中國象棋", sf::Style::Close | sf::Style::Titlebar);
 	this->window->setFramerateLimit(60);
-	
+
 	font.loadFromFile(FONT_PATH);
 }
 
@@ -23,7 +23,7 @@ bool Viewer::windowIsOpen()
 	return this->window->isOpen();
 }
 
-void Viewer::pollevent()
+int Viewer::pollevent()
 {
 	while (this->window->pollEvent(ev))
 	{
@@ -31,11 +31,18 @@ void Viewer::pollevent()
 		{
 		case sf::Event::Closed:
 			window->close();
+			return 1;
+			break;
+		case sf::Event::KeyReleased:
+			if (ev.key.code == sf::Keyboard::Escape) {
+				return 2;
+			}
 			break;
 		default:
 			break;
 		}
 	}
+	return 0;
 }
 
 sf::Vector2i Viewer::getMousePosition()
@@ -43,14 +50,24 @@ sf::Vector2i Viewer::getMousePosition()
 	return sf::Mouse::getPosition(*this->window);
 }
 
+bool Viewer::mouseClick(sf::Mouse::Button button)
+{
+	bool click = false;
+	while (sf::Mouse::isButtonPressed(button))
+	{
+		click = true;
+	}
+	return click;
+}
+
 void Viewer::close()
 {
 	this->window->close();
 }
 
-void Viewer::update()
+int Viewer::update()
 {
-	pollevent();
+	return pollevent();
 }
 
 void Viewer::clear()
@@ -60,7 +77,7 @@ void Viewer::clear()
 
 int Viewer::showMenu()	//0:exit game 1:start new game 2:select a file
 {
-	int choice=-1;
+	int choice = -1;
 	//title
 	sf::Text title(L"中國象棋", font);
 	title.setCharacterSize(120);
@@ -107,7 +124,7 @@ int Viewer::showMenu()	//0:exit game 1:start new game 2:select a file
 	if (startRect.contains(sf::Vector2f(this->getMousePosition())))
 	{
 		startBtn.scale(sf::Vector2f(1.05, 1.05));
-		startBtn.setPosition(sf::Vector2f(510-6.5, 355-1.75));
+		startBtn.setPosition(sf::Vector2f(510 - 6.5, 355 - 1.75));
 		choice = 1;
 	}
 	else
@@ -139,22 +156,22 @@ int Viewer::showMenu()	//0:exit game 1:start new game 2:select a file
 		exitBtn.scale(sf::Vector2f(1, 1));
 		exitBtn.setPosition(sf::Vector2f(510, 555));
 	}
-	
-	
+
+
 	this->window->draw(startBtn);
 	this->window->draw(startText);
 	this->window->draw(fileBtn);
 	this->window->draw(fileText);
 	this->window->draw(exitBtn);
 	this->window->draw(exitText);
-	
+
 	return choice;
 }
 
 void Viewer::showCheck(Team team)
 {
 	if (team == Team::Red) {
-		sf::Text redCheck(L"紅方將軍!!",font);
+		sf::Text redCheck(L"紅方將軍!!", font);
 		redCheck.setCharacterSize(40);
 		//redCheck.setStyle(sf::Text::Bold);
 		redCheck.setFillColor(sf::Color::Black);
@@ -178,7 +195,7 @@ void Viewer::showWinner(Team team)
 {
 	//show who win
 	sf::Text win;
-	if (team == Team::Red) 
+	if (team == Team::Red)
 		win.setString(L"紅方獲勝!!");
 	else
 		win.setString(L"黑方獲勝!!");
@@ -186,10 +203,10 @@ void Viewer::showWinner(Team team)
 	win.setCharacterSize(80);
 	win.setStyle(sf::Text::Bold);
 	win.setFillColor(sf::Color::Black);
-	win.setPosition(sf::Vector2f(700.f,100.f));
+	win.setPosition(sf::Vector2f(700.f, 100.f));
 	this->window->draw(win);
 
-	
+
 
 }
 
@@ -223,14 +240,14 @@ int Viewer::showOneMoreGame()
 	noBtn.setOutlineThickness(1);
 	yesBtn.setOutlineColor(sf::Color(0, 0, 0, 255));
 	noBtn.setOutlineColor(sf::Color(0, 0, 0, 255));
-	yesBtn.setFillColor(sf::Color(0, 0, 0,50));
+	yesBtn.setFillColor(sf::Color(0, 0, 0, 50));
 	noBtn.setFillColor(sf::Color(0, 0, 0, 50));
-	
+
 	sf::FloatRect yesRect(yesBtn.getPosition(), yesBtn.getSize()), noRect(noBtn.getPosition(), noBtn.getSize());
-	
+
 	if (yesRect.contains(sf::Vector2f(this->getMousePosition()))) {
 		yesBtn.scale(sf::Vector2f(1.05, 1.05));
-		yesBtn.setPosition(sf::Vector2f(700-1, 400-0.6));
+		yesBtn.setPosition(sf::Vector2f(700 - 1, 400 - 0.6));
 		choice = 1;
 	}
 	else {
@@ -252,6 +269,55 @@ int Viewer::showOneMoreGame()
 	this->window->draw(noBtn);
 	this->window->draw(yesText);
 	this->window->draw(noText);
+	return choice;
+}
+
+int Viewer::showPause()
+{
+	int choice = -1;
+	sf::RectangleShape background(sf::Vector2f(1280, 576));
+	background.setFillColor(sf::Color(0, 0, 0, 127));
+	background.setPosition(sf::Vector2f(0, 96));
+
+	sf::Text pause(L"暫停", font);
+	pause.setCharacterSize(80);
+	pause.setFillColor(sf::Color::White);
+	pause.setPosition(sf::Vector2f(560, 150));
+
+	sf::Text continu(L"繼續遊戲", font);
+	continu.setCharacterSize(50);
+	continu.setFillColor(sf::Color::White);
+	continu.setOrigin(100, 25);
+	continu.setPosition(sf::Vector2f(640, 350));
+
+	sf::Text toMenu(L"回到主選單", font);
+	toMenu.setCharacterSize(50);
+	toMenu.setFillColor(sf::Color::White);
+	toMenu.setOrigin(125, 25);
+	toMenu.setPosition(640, 450);
+
+	if (continu.getGlobalBounds().contains(sf::Vector2f(this->getMousePosition())))
+	{
+		continu.setScale(1.1, 1.1);
+		choice = 0;
+	}
+	else
+	{
+		continu.setScale(1, 1);
+	}
+	if (toMenu.getGlobalBounds().contains(sf::Vector2f(this->getMousePosition())))
+	{
+		toMenu.setScale(1.1, 1.1);
+		choice = 1;
+	}
+	else
+	{
+		toMenu.setScale(1, 1);
+	}
+	this->window->draw(background);
+	this->window->draw(pause);
+	this->window->draw(continu);
+	this->window->draw(toMenu);
 	return choice;
 }
 
@@ -309,6 +375,6 @@ void Viewer::drawSprite(std::vector<sf::Sprite> sprites)
 
 void Viewer::display()
 {
-	
+
 	this->window->display();
 }

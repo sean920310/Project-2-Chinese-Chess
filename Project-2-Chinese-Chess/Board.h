@@ -34,5 +34,7 @@ public:
 	std::vector<sf::Sprite> getAllSprite();
 	std::vector<Chess*> getAllChess();
 	void moveChess(const Coord& fromCoord, const Coord& toCoord);
+	bool oneSideIsCheck(Team& team);
+	bool oneSideIsWin(Team& team);
 };
 

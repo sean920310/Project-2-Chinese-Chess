@@ -27,10 +27,14 @@ private:
 public:	
 	GameManager();
 	~GameManager();
+
+	//0:exit game 1:start new game 2:select a file
 	int menu();
-	void readFile();
 	void inGame(InGameState state);
 	bool endGame(Team team);
+	//0:windows close 1:continue 2:to menu
+	int pause();
+	void readFile();
 	void logFile(Coord from, Coord to);
 };
 

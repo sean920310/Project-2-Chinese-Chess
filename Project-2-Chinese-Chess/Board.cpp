@@ -285,5 +285,61 @@ void Board::moveChess(const Coord& fromCoord, const Coord& toCoord)
 	
 }
 
+bool Board::oneSideIsCheck(Team& team)
+{
+	Team anotherTeam;
+	bool check=false;
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 10; j++) {
+			if (this->getChess({ i,j }) != nullptr) {
+				auto canMovePosCoord = this->getChess({ i,j })->coordCanMove(*this);
+				for (const auto& coord : canMovePosCoord) {
+					if (this->getChess(coord) != nullptr) {
+						if (this->getChess(coord)->getCharacter() == Characters::General) {
+							if (team != this->getChess({ i,j })->getTeam()) {
+								check = true;
+								anotherTeam = this->getChess({ i,j })->getTeam();
+							}
+							else {
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if (check) {
+		team = anotherTeam;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool Board::oneSideIsWin(Team& team)
+{
+	bool redAlive = false;
+	bool blackAlive = false;
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 10; j++) {
+			if (this->getChess({ i,j }) != nullptr) {
+				if (this->getChess({ i,j })->getCharacter() == Characters::General) {
+					if (this->getChess({ i,j })->getTeam() == Team::Red) {
+						team = Team::Red;
+						redAlive = true;
+					}
+					else
+					{
+						team = Team::Black;
+						blackAlive = true;
+					}
+				}
+			}
+		}
+	}
+	return !(redAlive && blackAlive);
+}
+
 
 

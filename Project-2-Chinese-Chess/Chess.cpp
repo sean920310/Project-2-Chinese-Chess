@@ -85,26 +85,58 @@ void General::move(Board& board, Coord toCoord)
 std::vector<Coord> General::coordCanMove(Board& board)
 {
 	std::vector<Coord> canMove;
+
 	for (int i = -1; i <= 1; i++) {
 		for (int j = -1; j <= 1; j++) {
-			if (this->moveable(board, { this->coord.x + i,this->coord.y + j }))
-				canMove.push_back({ this->coord.x + i,this->coord.y + j });
+			if (this->moveable(board, { 4 + i,1 + j }))
+				canMove.push_back({ 4 + i,1 + j });
 		}
 	}
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			if (this->moveable(board, { 4 + i,8 + j }))
+				canMove.push_back({ 4 + i,8 + j });
+		}
+	}
+
+	//check if the move will be check
+
+
 	return canMove;
 }
 
 bool General::moveable(Board& board, Coord toCoord)
 {
-	
-	if (this->team==Team::Red&&(toCoord.x < 3 || toCoord.x>5 || toCoord.y > 9 || toCoord.y < 7))
-		return false;
-	else if (this->team == Team::Black && (toCoord.x < 3 || toCoord.x>5 || toCoord.y > 2 || toCoord.y < 0))
+
+	if (!((toCoord.x >= 3 && toCoord.x <= 5 && toCoord.y <= 2 && toCoord.y >= 0) || (toCoord.x >= 3 && toCoord.x <= 5 && toCoord.y <= 9 && toCoord.y >= 7)))
 		return false;
 	else if (toCoord == coord)
 		return false;
 	else
 	{
+		//General to General
+		if (team == Team::Red && (toCoord.x >= 3 && toCoord.x <= 5 && toCoord.y <= 2 && toCoord.y >= 0) && board.getChess(toCoord) != nullptr) {
+			for (int i = toCoord.y + 1; i < this->coord.y; i++) {
+				if (board.getChess({ this->coord.x,i }) != nullptr)
+					return false;
+			}
+			if (board.getChess(toCoord)->getCharacter() == Characters::General)
+				return true;
+			else
+				return false;
+		}
+		if (team == Team::Black && (toCoord.x >= 3 && toCoord.x <= 5 && toCoord.y <= 9 && toCoord.y >= 7) && board.getChess(toCoord) != nullptr) {
+			for (int i = this->coord.y + 1; i < toCoord.y; i++) {
+				if (board.getChess({ this->coord.x,i }) != nullptr)
+					return false;
+			}
+			if (board.getChess(toCoord)->getCharacter() == Characters::General)
+				return true;
+			else
+				return false;
+		}
+
+		//else
 		if (abs(toCoord.x - this->coord.x) > 1 || abs(toCoord.y - this->coord.y) > 1)
 			return false;
 		if (abs(toCoord.x - this->coord.x) && abs(toCoord.y - this->coord.y))
@@ -212,8 +244,8 @@ void Elephant::move(Board& board, Coord toCoord)
 std::vector<Coord> Elephant::coordCanMove(Board& board)
 {
 	std::vector<Coord> canMove;
-	for (int i = -2; i <= 2; i+=4) {
-		for (int j = -2; j <= 2; j+=4) {
+	for (int i = -2; i <= 2; i += 4) {
+		for (int j = -2; j <= 2; j += 4) {
 			if (this->moveable(board, { this->coord.x + i,this->coord.y + j }))
 				canMove.push_back({ this->coord.x + i,this->coord.y + j });
 		}
@@ -291,8 +323,8 @@ void Horse::move(Board& board, Coord toCoord)
 std::vector<Coord> Horse::coordCanMove(Board& board)
 {
 	std::vector<Coord> canMove;
-	for (int i = -2; i <= 2; i ++) {
-		for (int j = -2; j <= 2; j ++) {
+	for (int i = -2; i <= 2; i++) {
+		for (int j = -2; j <= 2; j++) {
 			if (this->moveable(board, { this->coord.x + i,this->coord.y + j }))
 				canMove.push_back({ this->coord.x + i,this->coord.y + j });
 		}

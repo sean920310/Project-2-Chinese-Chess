@@ -11,20 +11,27 @@ private:
 	sf::VideoMode videoMode;
 	sf::Event ev;
 	sf::Font font;
+	bool clickLock = false;
 public:
 	Viewer();
 	~Viewer();
 	
 	bool windowIsOpen();
-	void pollevent();
+	int pollevent();
 	sf::Vector2i getMousePosition();
+	bool mouseClick(sf::Mouse::Button button);
 	void close();
-	void update();
+	//0:not event 1:close 2:pause 
+	int update();
 	void clear();
-	int showMenu();	//0:exit game 1:start new game 2:select a file
+	//0:exit game 1:start new game 2:select a file
+	int showMenu();	
 	void showCheck(Team team);
 	void showWinner(Team team);
-	int showOneMoreGame(); //choice -1:no select 0:no 1:yes
+	//-1:no select 0:no 1:yes
+	int showOneMoreGame();
+	//-1:no select 0:continue 1:to menu
+	int showPause();
 	void drawRightSideObject(Team team);
 	void drawCanMovePos(std::vector<Coord> coords);
 	void drawSprite(std::vector<sf::Sprite> sprites);
