@@ -30,7 +30,7 @@ public:
 	~Board();
 	Board& operator=(const Board& rhs);
 	void newBoard();
-	Chess* getChess(Coord coord);
+	Chess* getChess(Coord coord) const;
 	std::vector<sf::Sprite> getAllSprite();
 	std::vector<Chess*> getAllChess();
 	void moveChess(const Coord& fromCoord, const Coord& toCoord);

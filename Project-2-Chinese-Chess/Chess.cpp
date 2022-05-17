@@ -1,8 +1,17 @@
 #include "Chess.h"
 
-Chess::Chess(const Team& team) :coord({ 0,0 })
+Chess::Chess(const Team& team) :coord({ 0,0 }), charater(Characters::General)
 {
 	this->team = team;
+}
+
+Chess::Chess(const Chess& rhs)
+{
+	this->team = rhs.team;
+	this->chessTexture = rhs.chessTexture;
+	this->chess = rhs.chess;
+	this->coord = rhs.coord;
+	this->charater = rhs.charater;
 }
 
 void Chess::setPosition(Coord coord)
@@ -58,6 +67,29 @@ bool Chess::isChoice()
 	return isSelect;
 }
 
+void Chess::removeWillCheckCoord(const Board& board, std::vector<Coord>& allCoord)
+{
+	std::vector<Coord> resultCoord;
+	Coord originCoord = this->coord;
+	for (const auto& toCoord : allCoord) {
+		Board tempBoard = board;
+		Team chessTeam;
+		if (this->team == Team::Red)
+			chessTeam = Team::Black;
+		else
+			chessTeam = Team::Red;
+
+		tempBoard.moveChess(this->coord, toCoord);
+		if (tempBoard.oneSideIsCheck(chessTeam)) {
+			if (chessTeam != this->team) {
+				continue;
+			}
+		}
+		resultCoord.push_back(toCoord);
+	}
+	allCoord = resultCoord;
+}
+
 //==================================================General==================================================
 
 General::General(const Team& team) :Chess(team)
@@ -71,18 +103,12 @@ General::General(const Team& team) :Chess(team)
 	chess.setScale(sf::Vector2f(CHESS_SCALE_SIZE, CHESS_SCALE_SIZE));
 }
 
-void General::move(Board& board, Coord toCoord)
+General::General(const Chess& rhs):Chess(rhs)
 {
-	if (this->moveable(board, toCoord)) {
-		board.moveChess(this->coord, toCoord);
-	}
-	else
-	{
-		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
-	}
+	
 }
 
-std::vector<Coord> General::coordCanMove(Board& board)
+std::vector<Coord> General::coordCanMove(const Board& board)
 {
 	std::vector<Coord> canMove;
 
@@ -99,13 +125,10 @@ std::vector<Coord> General::coordCanMove(Board& board)
 		}
 	}
 
-	//check if the move will be check
-
-
 	return canMove;
 }
 
-bool General::moveable(Board& board, Coord toCoord)
+bool General::moveable(const Board& board, Coord toCoord)
 {
 
 	if (!((toCoord.x >= 3 && toCoord.x <= 5 && toCoord.y <= 2 && toCoord.y >= 0) || (toCoord.x >= 3 && toCoord.x <= 5 && toCoord.y <= 9 && toCoord.y >= 7)))
@@ -120,7 +143,7 @@ bool General::moveable(Board& board, Coord toCoord)
 				if (board.getChess({ this->coord.x,i }) != nullptr)
 					return false;
 			}
-			if (board.getChess(toCoord)->getCharacter() == Characters::General)
+			if (board.getChess(toCoord)->getCharacter() == Characters::General && this->coord.x == toCoord.x)
 				return true;
 			else
 				return false;
@@ -130,7 +153,7 @@ bool General::moveable(Board& board, Coord toCoord)
 				if (board.getChess({ this->coord.x,i }) != nullptr)
 					return false;
 			}
-			if (board.getChess(toCoord)->getCharacter() == Characters::General)
+			if (board.getChess(toCoord)->getCharacter() == Characters::General && this->coord.x == toCoord.x)
 				return true;
 			else
 				return false;
@@ -167,18 +190,11 @@ Advisor::Advisor(const Team& team) :Chess(team)
 	chess.setScale(sf::Vector2f(CHESS_SCALE_SIZE, CHESS_SCALE_SIZE));
 }
 
-void Advisor::move(Board& board, Coord toCoord)
+Advisor::Advisor(const Chess& rhs):Chess(rhs)
 {
-	if (this->moveable(board, toCoord)) {
-		board.moveChess(this->coord, toCoord);
-	}
-	else
-	{
-		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
-	}
 }
 
-std::vector<Coord> Advisor::coordCanMove(Board& board)
+std::vector<Coord> Advisor::coordCanMove(const Board& board)
 {
 
 	std::vector<Coord> canMove;
@@ -188,10 +204,11 @@ std::vector<Coord> Advisor::coordCanMove(Board& board)
 				canMove.push_back({ this->coord.x + i,this->coord.y + j });
 		}
 	}
+
 	return canMove;
 }
 
-bool Advisor::moveable(Board& board, Coord toCoord)
+bool Advisor::moveable(const Board& board, Coord toCoord)
 {
 	if (this->team == Team::Red && (toCoord.x < 3 || toCoord.x>5 || toCoord.y > 9 || toCoord.y < 7))
 		return false;
@@ -230,18 +247,11 @@ Elephant::Elephant(const Team& team) :Chess(team)
 	chess.setScale(sf::Vector2f(CHESS_SCALE_SIZE, CHESS_SCALE_SIZE));
 }
 
-void Elephant::move(Board& board, Coord toCoord)
+Elephant::Elephant(const Chess& rhs):Chess(rhs)
 {
-	if (this->moveable(board, toCoord)) {
-		board.moveChess(this->coord, toCoord);
-	}
-	else
-	{
-		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
-	}
 }
 
-std::vector<Coord> Elephant::coordCanMove(Board& board)
+std::vector<Coord> Elephant::coordCanMove(const Board& board)
 {
 	std::vector<Coord> canMove;
 	for (int i = -2; i <= 2; i += 4) {
@@ -253,7 +263,7 @@ std::vector<Coord> Elephant::coordCanMove(Board& board)
 	return canMove;
 }
 
-bool Elephant::moveable(Board& board, Coord toCoord)
+bool Elephant::moveable(const Board& board, Coord toCoord)
 {
 	Coord tempCoord = toCoord;
 	tempCoord.x -= (toCoord.x - this->coord.x) / 2;
@@ -309,18 +319,11 @@ Horse::Horse(const Team& team) :Chess(team)
 	chess.setScale(sf::Vector2f(CHESS_SCALE_SIZE, CHESS_SCALE_SIZE));
 }
 
-void Horse::move(Board& board, Coord toCoord)
+Horse::Horse(const Chess& rhs):Chess(rhs)
 {
-	if (this->moveable(board, toCoord)) {
-		board.moveChess(this->coord, toCoord);
-	}
-	else
-	{
-		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
-	}
 }
 
-std::vector<Coord> Horse::coordCanMove(Board& board)
+std::vector<Coord> Horse::coordCanMove(const Board& board)
 {
 	std::vector<Coord> canMove;
 	for (int i = -2; i <= 2; i++) {
@@ -332,7 +335,7 @@ std::vector<Coord> Horse::coordCanMove(Board& board)
 	return canMove;
 }
 
-bool Horse::moveable(Board& board, Coord toCoord)
+bool Horse::moveable(const Board& board, Coord toCoord)
 {
 	Coord tempCoord = this->coord;
 	int xdif = toCoord.x - this->coord.x;
@@ -389,18 +392,11 @@ Chariot::Chariot(const Team& team) :Chess(team)
 	chess.setScale(sf::Vector2f(CHESS_SCALE_SIZE, CHESS_SCALE_SIZE));
 }
 
-void Chariot::move(Board& board, Coord toCoord)
+Chariot::Chariot(const Chess& rhs):Chess(rhs)
 {
-	if (this->moveable(board, toCoord)) {
-		board.moveChess(this->coord, toCoord);
-	}
-	else
-	{
-		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
-	}
 }
 
-std::vector<Coord> Chariot::coordCanMove(Board& board)
+std::vector<Coord> Chariot::coordCanMove(const Board& board)
 {
 	std::vector<Coord> canMove;
 	for (int i = 0; i < 9; i++) {
@@ -414,7 +410,7 @@ std::vector<Coord> Chariot::coordCanMove(Board& board)
 	return canMove;
 }
 
-bool Chariot::moveable(Board& board, Coord toCoord)
+bool Chariot::moveable(const Board& board, Coord toCoord)
 {
 	if (toCoord.x < 0 || toCoord.x>8 || toCoord.y > 9 || toCoord.y < 0)
 		return false;
@@ -485,18 +481,11 @@ Cannon::Cannon(const Team& team) :Chess(team)
 	chess.setScale(sf::Vector2f(CHESS_SCALE_SIZE, CHESS_SCALE_SIZE));
 }
 
-void Cannon::move(Board& board, Coord toCoord)
+Cannon::Cannon(const Chess& rhs):Chess(rhs)
 {
-	if (this->moveable(board, toCoord)) {
-		board.moveChess(this->coord, toCoord);
-	}
-	else
-	{
-		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
-	}
 }
 
-std::vector<Coord> Cannon::coordCanMove(Board& board)
+std::vector<Coord> Cannon::coordCanMove(const Board& board)
 {
 	std::vector<Coord> canMove;
 	for (int i = 0; i < 9; i++) {
@@ -510,7 +499,7 @@ std::vector<Coord> Cannon::coordCanMove(Board& board)
 	return canMove;
 }
 
-bool Cannon::moveable(Board& board, Coord toCoord)
+bool Cannon::moveable(const Board& board, Coord toCoord)
 {
 	if (toCoord.x < 0 || toCoord.x>8 || toCoord.y > 9 || toCoord.y < 0)
 		return false;
@@ -591,27 +580,11 @@ Soldier::Soldier(const Team& team) :Chess(team)
 	chess.setScale(sf::Vector2f(CHESS_SCALE_SIZE, CHESS_SCALE_SIZE));
 }
 
-void Soldier::move(Board& board, Coord toCoord)
+Soldier::Soldier(const Chess& rhs):Chess(rhs)
 {
-	if (this->moveable(board, toCoord)) {
-		board.moveChess(this->coord, toCoord);
-		if (this->team == Team::Red) {
-			if (toCoord.y < 5)
-				this->isCrossRiver = true;
-		}
-		else
-		{
-			if (toCoord.y > 4)
-				this->isCrossRiver = true;
-		}
-	}
-	else
-	{
-		std::cout << this->coord.x << " " << this->coord.y << " can't move to " << toCoord.x << " " << toCoord.y << std::endl;
-	}
 }
 
-std::vector<Coord> Soldier::coordCanMove(Board& board)
+std::vector<Coord> Soldier::coordCanMove(const Board& board)
 {
 	std::vector<Coord> canMove;
 	for (int i = -1; i <= 1; i++) {
@@ -623,7 +596,7 @@ std::vector<Coord> Soldier::coordCanMove(Board& board)
 	return canMove;
 }
 
-bool Soldier::moveable(Board& board, Coord toCoord)
+bool Soldier::moveable(const Board& board, Coord toCoord)
 {
 	if (toCoord == coord)
 		return false;

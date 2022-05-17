@@ -156,6 +156,7 @@ void GameManager::inGame(InGameState state)
 					std::cout << chess->getCoord().x << " " << chess->getCoord().y << " is press.\n";
 					canMovePosCoord.clear();
 					canMovePosCoord = chess->coordCanMove(board);
+					chess->removeWillCheckCoord(board,canMovePosCoord);
 					state = InGameState::selectChess;
 					break;
 				}

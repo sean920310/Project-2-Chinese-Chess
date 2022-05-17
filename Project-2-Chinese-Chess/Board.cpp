@@ -102,10 +102,39 @@ Board::Board() :boardArr(9, std::vector<Chess*>(10, nullptr))
 	boardArr[7][7] = redCannon[1];
 }
 
-Board::Board(const Board & rhs)
+Board::Board(const Board& rhs):boardArr(9, std::vector<Chess*>(10, nullptr))
 {
-	for (int i = 0; i < 9; i++) {
-		this->boardArr[i] = rhs.boardArr[i];
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 9; j++) {
+			if (rhs.boardArr[j][i] != nullptr) {
+				switch (rhs.boardArr[j][i]->getCharacter())
+				{
+				case Characters::General:
+					this->boardArr[j][i] = new General(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Advisor:
+					this->boardArr[j][i] = new Advisor(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Elephant:
+					this->boardArr[j][i] = new Elephant(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Horse:
+					this->boardArr[j][i] = new Horse(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Chariot:
+					this->boardArr[j][i] = new Chariot(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Cannon:
+					this->boardArr[j][i] = new Cannon(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Soldier:
+					this->boardArr[j][i] = new Soldier(*rhs.boardArr[j][i]);
+					break;
+				}
+			}
+			else
+				this->boardArr[j][i] = nullptr;
+		}
 	}
 	this->checkBoardTexture = rhs.checkBoardTexture;
 	this->checkBoard = rhs.checkBoard;
@@ -123,8 +152,37 @@ Board::~Board()
 
 Board& Board::operator=(const Board& rhs)
 {
-	for (int i = 0; i < 9; i++) {
-		this->boardArr[i] = rhs.boardArr[i];
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 9; j++) {
+			if (rhs.boardArr[j][i] != nullptr) {
+				switch (rhs.boardArr[j][i]->getCharacter())
+				{
+				case Characters::General:
+					this->boardArr[j][i] = new General(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Advisor:
+					this->boardArr[j][i] = new Advisor(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Elephant:
+					this->boardArr[j][i] = new Elephant(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Horse:
+					this->boardArr[j][i] = new Horse(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Chariot:
+					this->boardArr[j][i] = new Chariot(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Cannon:
+					this->boardArr[j][i] = new Cannon(*rhs.boardArr[j][i]);
+					break;
+				case Characters::Soldier:
+					this->boardArr[j][i] = new Soldier(*rhs.boardArr[j][i]);
+					break;
+				}
+			}
+			else
+				this->boardArr[j][i] = nullptr;
+		}
 	}
 	this->checkBoardTexture = rhs.checkBoardTexture;
 	this->checkBoard = rhs.checkBoard;
@@ -238,7 +296,7 @@ void Board::newBoard()
 	boardArr[7][7] = redCannon[1];
 }
 
-Chess * Board::getChess(Coord coord)
+Chess* Board::getChess(Coord coord) const
 {
 	if (coord.x > 8 || coord.y > 9)
 		return nullptr;
@@ -282,13 +340,13 @@ void Board::moveChess(const Coord& fromCoord, const Coord& toCoord)
 
 	this->boardArr[toCoord.x][toCoord.y] = temp;
 	this->boardArr[fromCoord.x][fromCoord.y] = nullptr;
-	
+
 }
 
 bool Board::oneSideIsCheck(Team& team)
 {
 	Team anotherTeam;
-	bool check=false;
+	bool check = false;
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 10; j++) {
 			if (this->getChess({ i,j }) != nullptr) {

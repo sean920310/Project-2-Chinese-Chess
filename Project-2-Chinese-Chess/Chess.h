@@ -16,48 +16,49 @@ protected:
 public:
 	//constructor
 	Chess(const Team& team = Team::Black);
+	Chess(const Chess& rhs);
 
 	//function
 	void setPosition(Coord coord);
-	void showSelect(sf::Vector2i mouseCoord,Team team);
+	void showSelect(sf::Vector2i mouseCoord, Team team);
 	sf::Sprite getSprite();
 	Coord getCoord();
 	Team getTeam();
 	Characters getCharacter();
 	bool isChoice();
-
+	//*check if the move will be check
+	void removeWillCheckCoord(const Board& board, std::vector<Coord>& allCoord);
 
 	//move function
-	virtual void move(Board& board, Coord toCoord) = 0;
-	virtual std::vector<Coord> coordCanMove(Board& board) = 0;
-	virtual bool moveable(Board& board, Coord toCoord) = 0;
+	virtual std::vector<Coord> coordCanMove(const Board& board) = 0;
+	virtual bool moveable(const Board& board, Coord toCoord) = 0;
 };
 
 class General :public Chess
 {
 public:
 	General(const Team& team = Team::Black);
-	virtual void move(Board& board, Coord toCoord) override;
-	virtual std::vector<Coord> coordCanMove(Board& board) override;
-	virtual bool moveable(Board& board, Coord toCoord) override;
+	General(const Chess& rhs);
+	virtual std::vector<Coord> coordCanMove(const Board& board) override;
+	virtual bool moveable(const Board& board, Coord toCoord) override;
 };
 
 class Advisor :public Chess
 {
 public:
 	Advisor(const Team& team = Team::Black);
-	virtual void move(Board& board, Coord toCoord) override;
-	virtual std::vector<Coord> coordCanMove(Board& board) override;
-	virtual bool moveable(Board& board, Coord toCoord) override;
+	Advisor(const Chess& rhs);
+	virtual std::vector<Coord> coordCanMove(const Board& board) override;
+	virtual bool moveable(const Board& board, Coord toCoord) override;
 };
 
 class Elephant :public Chess
 {
 public:
 	Elephant(const Team& team = Team::Black);
-	virtual void move(Board& board, Coord toCoord) override;
-	virtual std::vector<Coord> coordCanMove(Board& board) override;
-	virtual bool moveable(Board& board, Coord toCoord) override;
+	Elephant(const Chess& rhs);
+	virtual std::vector<Coord> coordCanMove(const Board& board) override;
+	virtual bool moveable(const Board& board, Coord toCoord) override;
 };
 
 
@@ -65,27 +66,27 @@ class Horse :public Chess
 {
 public:
 	Horse(const Team& team = Team::Black);
-	virtual void move(Board& board, Coord toCoord) override;
-	virtual std::vector<Coord> coordCanMove(Board& board) override;
-	virtual bool moveable(Board& board, Coord toCoord) override;
+	Horse(const Chess& rhs);
+	virtual std::vector<Coord> coordCanMove(const Board& board) override;
+	virtual bool moveable(const Board& board, Coord toCoord) override;
 };
 
 class Chariot :public Chess
 {
 public:
 	Chariot(const Team& team = Team::Black);
-	virtual void move(Board& board, Coord toCoord) override;
-	virtual std::vector<Coord> coordCanMove(Board& board) override;
-	virtual bool moveable(Board& board, Coord toCoord) override;
+	Chariot(const Chess& rhs);
+	virtual std::vector<Coord> coordCanMove(const Board& board) override;
+	virtual bool moveable(const Board& board, Coord toCoord) override;
 };
 
 class Cannon :public Chess
 {
 public:
 	Cannon(const Team& team = Team::Black);
-	virtual void move(Board& board, Coord toCoord) override;
-	virtual std::vector<Coord> coordCanMove(Board& board) override;
-	virtual bool moveable(Board& board, Coord toCoord) override;
+	Cannon(const Chess& rhs);
+	virtual std::vector<Coord> coordCanMove(const Board& board) override;
+	virtual bool moveable(const Board& board, Coord toCoord) override;
 };
 
 class Soldier :public Chess
@@ -94,7 +95,7 @@ protected:
 	bool isCrossRiver = false;
 public:
 	Soldier(const Team& team = Team::Black);
-	virtual void move(Board& board, Coord toCoord) override;
-	virtual std::vector<Coord> coordCanMove(Board& board) override;
-	virtual bool moveable(Board& board, Coord toCoord) override;
+	Soldier(const Chess& rhs);
+	virtual std::vector<Coord> coordCanMove(const Board& board) override;
+	virtual bool moveable(const Board& board, Coord toCoord) override;
 };
