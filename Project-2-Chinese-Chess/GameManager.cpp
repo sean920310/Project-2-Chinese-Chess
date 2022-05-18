@@ -104,7 +104,7 @@ void GameManager::inGame(InGameState state)
 
 	std::vector<Coord> canMovePosCoord;
 	Coord coordChoiseChess, coordChoiseToMove;
-	bool isCheck = false;
+	bool isCheck = false , oneSurrender = false;
 	Team teamCheck , teamWin;
 
 	while (viewer.windowIsOpen())
@@ -120,6 +120,7 @@ void GameManager::inGame(InGameState state)
 			onBoard = board.getAllChess();
 			currentPlayer = Team::Red;
 			isCheck = false;
+			oneSurrender = false;
 			state = InGameState::selectChess;
 			break;
 
@@ -191,6 +192,14 @@ void GameManager::inGame(InGameState state)
 
 			//==================================================oneSideWin==================================================	**decide to play anthor game
 		case InGameState::oneSideWin:
+			if (oneSurrender) {
+				if (this->endGame(teamWin))
+					state = InGameState::start;
+				else
+					return;
+				continue;
+			}
+
 			teamWin = currentPlayer;
 			if (board.oneSideIsWin(teamWin)) {
 				if (this->endGame(teamWin))
@@ -246,6 +255,30 @@ void GameManager::inGame(InGameState state)
 		viewer.drawSprite(boardSprites);
 		viewer.drawCanMovePos(canMovePosCoord);
 		viewer.drawRightSideObject(currentPlayer);
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			switch (viewer.showSurrender(true, currentPlayer))
+			{
+			case 0:
+				if (this->confirmSurrender()) {
+					teamWin = Team::Red;
+					oneSurrender = true;
+					state = InGameState::oneSideWin;
+				}
+				break;
+			case 1:
+				if (this->confirmSurrender()) {
+					teamWin = Team::Black;
+					oneSurrender = true;
+					state = InGameState::oneSideWin;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else
+			viewer.showSurrender(true,currentPlayer);
+
 		if (isCheck)
 			viewer.showCheck(teamCheck);
 		viewer.display();
@@ -307,6 +340,7 @@ int GameManager::pause()
 		auto boardSprites = this->board.getAllSprite();
 		viewer.drawSprite(boardSprites);
 		viewer.drawRightSideObject(currentPlayer);
+		viewer.showSurrender(false,currentPlayer);
 		if (viewer.mouseClick(sf::Mouse::Left)) {
 			switch (viewer.showPause())
 			{
@@ -325,6 +359,50 @@ int GameManager::pause()
 		viewer.display();
 	}
 	return 0;
+}
+
+bool GameManager::confirmSurrender()
+{
+	while (viewer.windowIsOpen())
+	{
+		//update
+		switch (viewer.update())
+		{
+		case 0:
+			break;
+		case 1:
+			return false;
+			break;
+		case 2:
+			return false;
+			break;
+		}
+
+		//draw
+		viewer.clear();
+		auto boardSprites = this->board.getAllSprite();
+		viewer.drawSprite(boardSprites);
+		viewer.drawRightSideObject(currentPlayer);
+		viewer.showSurrender(false, currentPlayer);
+		if (viewer.mouseClick(sf::Mouse::Left)) {
+			switch (viewer.showConfirmSurrender())
+			{
+			case 0:
+				return false;
+				break;
+			case 1:
+				return true;
+				break;
+			default:
+				break;
+			}
+		}
+		else
+			viewer.showConfirmSurrender();
+		viewer.display();
+
+	}
+	return false;
 }
 
 void GameManager::readFile() {

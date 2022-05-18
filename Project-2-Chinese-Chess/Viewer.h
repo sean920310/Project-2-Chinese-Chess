@@ -21,7 +21,7 @@ public:
 	sf::Vector2i getMousePosition();
 	bool mouseClick(sf::Mouse::Button button);
 	void close();
-	//0:not event 1:close 2:pause 
+	//0:not event 1:close 2:esc 
 	int update();
 	void clear();
 	//0:exit game 1:start new game 2:select a file
@@ -32,6 +32,10 @@ public:
 	int showOneMoreGame();
 	//-1:no select 0:continue 1:to menu
 	int showPause();
+	//-1:no select 0:Black 1:Red
+	int showSurrender(bool canSelect , Team team);
+	//-1:no select 0:no 1:yes
+	int showConfirmSurrender();
 	void drawRightSideObject(Team team);
 	void drawCanMovePos(std::vector<Coord> coords);
 	void drawSprite(std::vector<sf::Sprite> sprites);

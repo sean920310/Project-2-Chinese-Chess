@@ -83,16 +83,18 @@ int Viewer::showMenu()	//0:exit game 1:start new game 2:select a file
 	title.setCharacterSize(120);
 	title.setStyle(sf::Text::Bold);
 	title.setFillColor(sf::Color::Black);
-	title.setPosition(sf::Vector2f(400.f, 100.f));
+	title.setPosition(400, 100);
 	this->window->draw(title);
 
 	//button
 	sf::Text startText(L"開始遊戲", font);
 	startText.setCharacterSize(60);
 	startText.setFillColor(sf::Color::Black);
-	startText.setPosition(sf::Vector2f(520.f, 350.f));
-	sf::RectangleShape startBtn(sf::Vector2f(260.f, 70.f));
-	startBtn.setPosition(sf::Vector2f(510.f, 355.f));
+	startText.setOrigin(120, 30);
+	startText.setPosition(640, 380);
+	sf::RectangleShape startBtn(sf::Vector2f(260, 70));
+	startBtn.setOrigin(130, 35);
+	startBtn.setPosition(640, 390);
 	startBtn.setOutlineThickness(1);
 	startBtn.setOutlineColor(sf::Color(0, 0, 0, 255));
 	startBtn.setFillColor(sf::Color(0, 0, 0, 50));
@@ -100,9 +102,11 @@ int Viewer::showMenu()	//0:exit game 1:start new game 2:select a file
 	sf::Text fileText(L"讀取資料", font);
 	fileText.setCharacterSize(60);
 	fileText.setFillColor(sf::Color::Black);
-	fileText.setPosition(sf::Vector2f(520.f, 450.f));
-	sf::RectangleShape fileBtn(sf::Vector2f(260.f, 70.f));
-	fileBtn.setPosition(sf::Vector2f(510.f, 455.f));
+	fileText.setOrigin(120, 30);
+	fileText.setPosition(640, 480);
+	sf::RectangleShape fileBtn(sf::Vector2f(260, 70));
+	fileBtn.setOrigin(130, 35);
+	fileBtn.setPosition(640, 490);
 	fileBtn.setOutlineThickness(1);
 	fileBtn.setOutlineColor(sf::Color(0, 0, 0, 255));
 	fileBtn.setFillColor(sf::Color(0, 0, 0, 50));
@@ -110,51 +114,53 @@ int Viewer::showMenu()	//0:exit game 1:start new game 2:select a file
 	sf::Text exitText(L"離開遊戲", font);
 	exitText.setCharacterSize(60);
 	exitText.setFillColor(sf::Color::Black);
-	exitText.setPosition(sf::Vector2f(520.f, 550.f));
-	sf::RectangleShape exitBtn(sf::Vector2f(260.f, 70.f));
-	exitBtn.setPosition(sf::Vector2f(510.f, 555.f));
+	exitText.setOrigin(120, 30);
+	exitText.setPosition(640, 580);
+	sf::RectangleShape exitBtn(sf::Vector2f(260, 70));
+	exitBtn.setOrigin(130, 35);
+	exitBtn.setPosition(640, 590);
 	exitBtn.setOutlineThickness(1);
 	exitBtn.setOutlineColor(sf::Color(0, 0, 0, 255));
 	exitBtn.setFillColor(sf::Color(0, 0, 0, 50));
 
-	sf::FloatRect startRect(startBtn.getPosition(), startBtn.getSize());
-	sf::FloatRect fileRect(fileBtn.getPosition(), fileBtn.getSize());
-	sf::FloatRect exitRect(exitBtn.getPosition(), exitBtn.getSize());
+	sf::FloatRect startRect(startBtn.getPosition() - startBtn.getOrigin(), startBtn.getSize());
+	sf::FloatRect fileRect(fileBtn.getPosition() - fileBtn.getOrigin(), fileBtn.getSize());
+	sf::FloatRect exitRect(exitBtn.getPosition() - exitBtn.getOrigin(), exitBtn.getSize());
 
 	if (startRect.contains(sf::Vector2f(this->getMousePosition())))
 	{
-		startBtn.scale(sf::Vector2f(1.05, 1.05));
-		startBtn.setPosition(sf::Vector2f(510 - 6.5, 355 - 1.75));
+		startBtn.scale(1.05, 1.05);
+		startText.scale(1.05, 1.05);
 		choice = 1;
 	}
 	else
 	{
-		startBtn.scale(sf::Vector2f(1, 1));
-		startBtn.setPosition(sf::Vector2f(510, 355));
+		startBtn.scale(1, 1);
+		startText.scale(1, 1);
 	}
 
 	if (fileRect.contains(sf::Vector2f(this->getMousePosition())))
 	{
-		fileBtn.scale(sf::Vector2f(1.05, 1.05));
-		fileBtn.setPosition(sf::Vector2f(510 - 6.5, 455 - 1.75));
+		fileBtn.scale(1.05, 1.05);
+		fileText.scale(1.05, 1.05);
 		choice = 2;
 	}
 	else
 	{
-		fileBtn.scale(sf::Vector2f(1, 1));
-		fileBtn.setPosition(sf::Vector2f(510, 455));
+		fileBtn.scale(1, 1);
+		fileText.scale(1, 1);
 	}
 
 	if (exitRect.contains(sf::Vector2f(this->getMousePosition())))
 	{
-		exitBtn.scale(sf::Vector2f(1.05, 1.05));
-		exitBtn.setPosition(sf::Vector2f(510 - 6.5, 555 - 1.75));
+		exitBtn.scale(1.05, 1.05);
+		exitText.scale(1.05, 1.05);
 		choice = 0;
 	}
 	else
 	{
-		exitBtn.scale(sf::Vector2f(1, 1));
-		exitBtn.setPosition(sf::Vector2f(510, 555));
+		exitBtn.scale(1, 1);
+		exitText.scale(1, 1);
 	}
 
 
@@ -175,7 +181,7 @@ void Viewer::showCheck(Team team)
 		redCheck.setCharacterSize(40);
 		//redCheck.setStyle(sf::Text::Bold);
 		redCheck.setFillColor(sf::Color::Black);
-		redCheck.setPosition(sf::Vector2f(700.f, 382. + 60.f));
+		redCheck.setPosition(700, 384 + 60);
 		this->window->draw(redCheck);
 	}
 	else
@@ -185,7 +191,7 @@ void Viewer::showCheck(Team team)
 		blackCheck.setCharacterSize(40);
 		//blackCheck.setStyle(sf::Text::Bold);
 		blackCheck.setFillColor(sf::Color::Black);
-		blackCheck.setPosition(sf::Vector2f(700.f, .0 + 60.f));
+		blackCheck.setPosition(700, 0 + 60);
 		this->window->draw(blackCheck);
 	}
 
@@ -203,10 +209,8 @@ void Viewer::showWinner(Team team)
 	win.setCharacterSize(80);
 	win.setStyle(sf::Text::Bold);
 	win.setFillColor(sf::Color::Black);
-	win.setPosition(sf::Vector2f(700.f, 100.f));
+	win.setPosition(700, 100);
 	this->window->draw(win);
-
-
 
 }
 
@@ -217,7 +221,7 @@ int Viewer::showOneMoreGame()
 	sf::Text oneMore(L"再來一局?", font);
 	oneMore.setCharacterSize(50);
 	oneMore.setFillColor(sf::Color::Black);
-	oneMore.setPosition(sf::Vector2f(700.f, 300.f));
+	oneMore.setPosition(700, 300);
 	this->window->draw(oneMore);
 
 	//show botton
@@ -226,16 +230,20 @@ int Viewer::showOneMoreGame()
 
 	yesText.setCharacterSize(40);
 	yesText.setFillColor(sf::Color::Black);
-	yesText.setPosition(sf::Vector2f(730.f, 400.f));
+	yesText.setOrigin(20, 20);
+	yesText.setPosition(750, 420);
 
 	noText.setCharacterSize(40);
 	noText.setFillColor(sf::Color::Black);
-	noText.setPosition(sf::Vector2f(850.f, 400.f));
+	noText.setOrigin(20, 20);
+	noText.setPosition(870, 420);
 
 	sf::RectangleShape yesBtn(sf::Vector2f(100, 60));
 	sf::RectangleShape noBtn(sf::Vector2f(100, 60));
-	yesBtn.setPosition(sf::Vector2f(700, 400));
-	noBtn.setPosition(sf::Vector2f(820, 400));
+	yesBtn.setOrigin(50, 30);
+	noBtn.setOrigin(50, 30);
+	yesBtn.setPosition(750, 430);
+	noBtn.setPosition(870, 430);
 	yesBtn.setOutlineThickness(1);
 	noBtn.setOutlineThickness(1);
 	yesBtn.setOutlineColor(sf::Color(0, 0, 0, 255));
@@ -243,26 +251,27 @@ int Viewer::showOneMoreGame()
 	yesBtn.setFillColor(sf::Color(0, 0, 0, 50));
 	noBtn.setFillColor(sf::Color(0, 0, 0, 50));
 
-	sf::FloatRect yesRect(yesBtn.getPosition(), yesBtn.getSize()), noRect(noBtn.getPosition(), noBtn.getSize());
+	sf::FloatRect yesRect(yesBtn.getPosition() - yesBtn.getOrigin(), yesBtn.getSize());
+	sf::FloatRect noRect(noBtn.getPosition() - noBtn.getOrigin(), noBtn.getSize());
 
 	if (yesRect.contains(sf::Vector2f(this->getMousePosition()))) {
-		yesBtn.scale(sf::Vector2f(1.05, 1.05));
-		yesBtn.setPosition(sf::Vector2f(700 - 1, 400 - 0.6));
+		yesBtn.scale(1.05, 1.05);
+		yesText.scale(1.05, 1.05);
 		choice = 1;
 	}
 	else {
-		yesBtn.scale(sf::Vector2f(1.f, 1.f));
-		yesBtn.setPosition(sf::Vector2f(700, 400));
+		yesBtn.scale(1, 1);
+		yesText.scale(1, 1);
 	}
 
 	if (noRect.contains(sf::Vector2f(this->getMousePosition()))) {
-		noBtn.scale(sf::Vector2f(1.05, 1.05));
-		noBtn.setPosition(sf::Vector2f(820 - 1, 400 - 0.6));
+		noBtn.scale(1.05, 1.05);
+		noText.scale(1.05, 1.05);
 		choice = 0;
 	}
 	else {
-		noBtn.scale(sf::Vector2f(1.f, 1.f));
-		noBtn.setPosition(sf::Vector2f(820, 400));
+		noBtn.scale(1, 1);
+		noText.scale(1, 1);
 	}
 
 	this->window->draw(yesBtn);
@@ -277,18 +286,18 @@ int Viewer::showPause()
 	int choice = -1;
 	sf::RectangleShape background(sf::Vector2f(1280, 576));
 	background.setFillColor(sf::Color(0, 0, 0, 127));
-	background.setPosition(sf::Vector2f(0, 96));
+	background.setPosition(0, 96);
 
 	sf::Text pause(L"暫停", font);
 	pause.setCharacterSize(80);
 	pause.setFillColor(sf::Color::White);
-	pause.setPosition(sf::Vector2f(560, 150));
+	pause.setPosition(560, 150);
 
 	sf::Text continu(L"繼續遊戲", font);
 	continu.setCharacterSize(50);
 	continu.setFillColor(sf::Color::White);
 	continu.setOrigin(100, 25);
-	continu.setPosition(sf::Vector2f(640, 350));
+	continu.setPosition(640, 350);
 
 	sf::Text toMenu(L"回到主選單", font);
 	toMenu.setCharacterSize(50);
@@ -321,6 +330,122 @@ int Viewer::showPause()
 	return choice;
 }
 
+int Viewer::showSurrender(bool canSelect, Team team)
+{
+	int choice = -1;
+	sf::Text red(L"投降", font);
+	red.setCharacterSize(40);
+	red.setFillColor(sf::Color::Black);
+	red.setOrigin(40, 20);
+	red.setPosition(1050, 414);
+
+	sf::RectangleShape redBtn(sf::Vector2f(100, 60));
+	redBtn.setOrigin(50, 30);
+	redBtn.setPosition(1050, 424);
+	redBtn.setOutlineThickness(1);
+	redBtn.setOutlineColor(sf::Color(0, 0, 0, 255));
+	redBtn.setFillColor(sf::Color(0, 0, 0, 50));
+
+	sf::Text black(L"投降", font);
+	black.setCharacterSize(40);
+	black.setFillColor(sf::Color::Black);
+	black.setOrigin(40, 20);
+	black.setPosition(1050, 30);
+
+	sf::RectangleShape blackBtn(sf::Vector2f(100, 60));
+	blackBtn.setOrigin(50, 30);
+	blackBtn.setPosition(1050, 40);
+	blackBtn.setOutlineThickness(1);
+	blackBtn.setOutlineColor(sf::Color(0, 0, 0, 255));
+	blackBtn.setFillColor(sf::Color(0, 0, 0, 50));
+
+	sf::FloatRect redRect(redBtn.getPosition() - redBtn.getOrigin(), redBtn.getSize());
+	sf::FloatRect blackRect(blackBtn.getPosition() - blackBtn.getOrigin(), blackBtn.getSize());
+
+	if (redRect.contains(sf::Vector2f(this->getMousePosition())) && canSelect) {
+		redBtn.scale(1.05, 1.05);
+		red.scale(1.05, 1.05);
+		choice = 1;
+	}
+	else {
+		redBtn.scale(1, 1);
+		red.scale(1, 1);
+	}
+
+	if (blackRect.contains(sf::Vector2f(this->getMousePosition())) && canSelect) {
+		blackBtn.scale(1.05, 1.05);
+		black.scale(1.05, 1.05);
+		choice = 0;
+	}
+	else {
+		blackBtn.scale(1, 1);
+		black.scale(1, 1);
+	}
+	if (team == Team::Red) {
+		this->window->draw(redBtn);
+		this->window->draw(red);
+	}
+	else
+	{
+		this->window->draw(blackBtn);
+		this->window->draw(black);
+
+	}
+	return choice;
+}
+
+int Viewer::showConfirmSurrender()
+{
+	int choice = -1;
+	sf::RectangleShape background(sf::Vector2f(1280, 576));
+	background.setFillColor(sf::Color(0, 0, 0, 127));
+	background.setPosition(0, 96);
+
+	sf::Text confirm(L"確定要投降嗎？", font);
+	confirm.setCharacterSize(80);
+	confirm.setFillColor(sf::Color::White);
+	confirm.setOrigin(240, 40);
+	confirm.setPosition(640, 190);
+
+	sf::Text yes(L"是", font);
+	yes.setCharacterSize(50);
+	yes.setFillColor(sf::Color::White);
+	yes.setOrigin(25, 25);
+	yes.setPosition(640, 350);
+
+	sf::Text no(L"否", font);
+	no.setCharacterSize(50);
+	no.setFillColor(sf::Color::White);
+	no.setOrigin(25, 25);
+	no.setPosition(640, 450);
+
+	if (yes.getGlobalBounds().contains(sf::Vector2f(this->getMousePosition())))
+	{
+		yes.setScale(1.2, 1.2);
+		choice = 1;
+	}
+	else
+	{
+		yes.setScale(1, 1);
+	}
+	if (no.getGlobalBounds().contains(sf::Vector2f(this->getMousePosition())))
+	{
+		no.setScale(1.2, 1.2);
+		choice = 0;
+	}
+	else
+	{
+		no.setScale(1, 1);
+	}
+
+	this->window->draw(background);
+	this->window->draw(confirm);
+	this->window->draw(yes);
+	this->window->draw(no);
+
+	return choice;
+}
+
 void Viewer::drawRightSideObject(Team team)
 {
 	//draw text
@@ -332,20 +457,22 @@ void Viewer::drawRightSideObject(Team team)
 	sf::Text black(red);
 	black.setString(L"黑方");
 	black.setFillColor(sf::Color::Black);
-	black.setPosition(sf::Vector2f(700.f, .0f));
-	red.setPosition(sf::Vector2f(700.f, 382.f));
+	black.setPosition(700, 0);
+	red.setPosition(700, 384);
 	this->window->draw(red);
 	this->window->draw(black);
 
 	//draw current player
-	sf::CircleShape showCurrentTeam(10.f);
+	sf::CircleShape showCurrentTeam(15.f);
 	showCurrentTeam.setFillColor(sf::Color::Red);
+	showCurrentTeam.setOutlineThickness(1);
+	showCurrentTeam.setOutlineColor(sf::Color::Black);
 	if (team == Team::Red) {
-		showCurrentTeam.setPosition(sf::Vector2f(660.f, 407.f));
+		showCurrentTeam.setPosition(660, 404);
 	}
 	else
 	{
-		showCurrentTeam.setPosition(sf::Vector2f(660.f, 25.f));
+		showCurrentTeam.setPosition(660, 20);
 	}
 	this->window->draw(showCurrentTeam);
 

@@ -34,6 +34,7 @@ public:
 	bool endGame(Team team);
 	//0:windows close 1:continue 2:to menu
 	int pause();
+	bool confirmSurrender();
 	void readFile();
 	void logFile(Coord from, Coord to);
 };
