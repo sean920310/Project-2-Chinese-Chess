@@ -102,7 +102,7 @@ Board::Board() :boardArr(9, std::vector<Chess*>(10, nullptr))
 	boardArr[7][7] = redCannon[1];
 }
 
-Board::Board(const Board& rhs):boardArr(9, std::vector<Chess*>(10, nullptr))
+Board::Board(const Board& rhs) :boardArr(9, std::vector<Chess*>(10, nullptr))
 {
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 9; j++) {
@@ -377,6 +377,30 @@ bool Board::oneSideIsCheck(Team& team)
 
 bool Board::oneSideIsWin(Team& team)
 {
+	//no place to move
+	bool noPlaceMove = true;
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 10; j++) {
+			if (this->getChess({ i,j }) != nullptr && this->getChess({i,j})->getTeam()!=team) {
+				std::vector<Coord> canMove;
+				canMove = this->getChess({ i,j })->coordCanMove(*this);
+				this->getChess({ i,j })->removeWillCheckCoord(*this, canMove);
+				if (canMove.size() > 0) {
+					noPlaceMove = false;
+					break;
+				}
+			}
+		}
+		if (!noPlaceMove)
+			break;
+	}
+
+	if (noPlaceMove) {
+		return true;
+	}
+
+
+	//general is dead
 	bool redAlive = false;
 	bool blackAlive = false;
 	for (int i = 0; i < 9; i++) {

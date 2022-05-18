@@ -105,7 +105,7 @@ void GameManager::inGame(InGameState state)
 	std::vector<Coord> canMovePosCoord;
 	Coord coordChoiseChess, coordChoiseToMove;
 	bool isCheck = false;
-	Team teamCheck = Team::Black, teamWin = Team::Black;
+	Team teamCheck , teamWin;
 
 	while (viewer.windowIsOpen())
 	{
@@ -191,6 +191,7 @@ void GameManager::inGame(InGameState state)
 
 			//==================================================oneSideWin==================================================	**decide to play anthor game
 		case InGameState::oneSideWin:
+			teamWin = currentPlayer;
 			if (board.oneSideIsWin(teamWin)) {
 				if (this->endGame(teamWin))
 					state = InGameState::start;
