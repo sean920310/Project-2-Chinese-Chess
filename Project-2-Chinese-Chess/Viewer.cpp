@@ -10,6 +10,8 @@ Viewer::Viewer() : ev()
 	this->window = new sf::RenderWindow(this->videoMode, L"Chinese Chess¤¤°ê¶H´Ñ", sf::Style::Close | sf::Style::Titlebar);
 	this->window->setFramerateLimit(60);
 
+
+	timeFont.loadFromFile(TIMEFONT_PATH);
 	font.loadFromFile(FONT_PATH);
 }
 
@@ -362,7 +364,7 @@ int Viewer::showSurrender(bool canSelect, Team team)
 	sf::FloatRect redRect(redBtn.getPosition() - redBtn.getOrigin(), redBtn.getSize());
 	sf::FloatRect blackRect(blackBtn.getPosition() - blackBtn.getOrigin(), blackBtn.getSize());
 
-	if (redRect.contains(sf::Vector2f(this->getMousePosition())) && canSelect) {
+	if (redRect.contains(sf::Vector2f(this->getMousePosition())) && canSelect && team == Team::Red) {
 		redBtn.scale(1.05, 1.05);
 		red.scale(1.05, 1.05);
 		choice = 1;
@@ -372,7 +374,7 @@ int Viewer::showSurrender(bool canSelect, Team team)
 		red.scale(1, 1);
 	}
 
-	if (blackRect.contains(sf::Vector2f(this->getMousePosition())) && canSelect) {
+	if (blackRect.contains(sf::Vector2f(this->getMousePosition())) && canSelect && team == Team::Black) {
 		blackBtn.scale(1.05, 1.05);
 		black.scale(1.05, 1.05);
 		choice = 0;
@@ -382,11 +384,17 @@ int Viewer::showSurrender(bool canSelect, Team team)
 		black.scale(1, 1);
 	}
 	if (team == Team::Red) {
+		black.setFillColor(sf::Color::Color(0, 0, 0, 127));
+		this->window->draw(blackBtn);
+		this->window->draw(black);
 		this->window->draw(redBtn);
 		this->window->draw(red);
 	}
 	else
 	{
+		red.setFillColor(sf::Color::Color(0, 0, 0, 127));
+		this->window->draw(redBtn);
+		this->window->draw(red);
 		this->window->draw(blackBtn);
 		this->window->draw(black);
 
@@ -444,6 +452,47 @@ int Viewer::showConfirmSurrender()
 	this->window->draw(no);
 
 	return choice;
+}
+
+void Viewer::drawTime(sf::Time redTime, sf::Time blackTime)
+{
+
+	std::string redMin, redSec, blackMin, blackSec;
+	redMin = std::to_string(int(redTime.asSeconds()) / 60);
+	redSec = std::to_string(int(redTime.asSeconds()) % 60);
+	blackMin = std::to_string(int(blackTime.asSeconds()) / 60);
+	blackSec = std::to_string(int(blackTime.asSeconds()) % 60);
+	if (int(redTime.asSeconds()) / 60 < 10) {
+		redMin = "0" + redMin;
+	}
+	if (int(redTime.asSeconds()) % 60 < 10) {
+		redSec = "0" + redSec;
+	}
+	if (int(blackTime.asSeconds()) / 60 < 10) {
+		blackMin = "0" + blackMin;
+	}
+	if (int(blackTime.asSeconds()) % 60 < 10) {
+		blackSec = "0" + blackSec;
+	}
+
+	sf::Text red(redMin + ":" + redSec, timeFont);
+	red.setCharacterSize(60);
+	red.setFillColor(sf::Color::White);
+	red.setOutlineThickness(2);
+	red.setOutlineColor(sf::Color::Black);
+	red.setPosition(1000, 464);
+
+
+	sf::Text black(blackMin + ":" + blackSec, timeFont);
+	black.setCharacterSize(60);
+	black.setFillColor(sf::Color::White);
+	black.setOutlineThickness(2);
+	black.setOutlineColor(sf::Color::Black);
+	black.setPosition(1000, 80);
+
+	this->window->draw(red);
+	this->window->draw(black);
+
 }
 
 void Viewer::drawRightSideObject(Team team)

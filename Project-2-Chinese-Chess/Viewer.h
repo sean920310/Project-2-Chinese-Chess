@@ -11,6 +11,7 @@ private:
 	sf::VideoMode videoMode;
 	sf::Event ev;
 	sf::Font font;
+	sf::Font timeFont;
 	bool clickLock = false;
 public:
 	Viewer();
@@ -36,6 +37,7 @@ public:
 	int showSurrender(bool canSelect , Team team);
 	//-1:no select 0:no 1:yes
 	int showConfirmSurrender();
+	void drawTime(sf::Time redTime, sf::Time blackTime);
 	void drawRightSideObject(Team team);
 	void drawCanMovePos(std::vector<Coord> coords);
 	void drawSprite(std::vector<sf::Sprite> sprites);

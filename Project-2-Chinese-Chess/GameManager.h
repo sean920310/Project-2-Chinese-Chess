@@ -18,6 +18,10 @@ class GameManager
 private:
 	std::vector<Chess*> onBoard;
 	Team currentPlayer;		//1:red , 2:black
+	sf::Time timeLimit;
+	sf::Time redTime;
+	sf::Time blackTime;
+	sf::Clock clock;
 	Board board;
 	Viewer viewer;
 	std::vector<sf::Sprite> sprites;

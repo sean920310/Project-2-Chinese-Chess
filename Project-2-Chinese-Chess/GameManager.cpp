@@ -61,6 +61,8 @@ GameManager::GameManager() :board(), viewer()
 {
 	onBoard = board.getAllChess();
 	currentPlayer = Team::Red;
+	//one side time limit
+	timeLimit = sf::seconds(60*60);
 }
 
 GameManager::~GameManager()
@@ -104,8 +106,11 @@ void GameManager::inGame(InGameState state)
 
 	std::vector<Coord> canMovePosCoord;
 	Coord coordChoiseChess, coordChoiseToMove;
-	bool isCheck = false , oneSurrender = false;
+	bool isCheck = false , oneSurrender = false,timeUp = false;
 	Team teamCheck , teamWin;
+	redTime = timeLimit;
+	blackTime = timeLimit;
+	clock.restart();
 
 	while (viewer.windowIsOpen())
 	{
@@ -121,6 +126,10 @@ void GameManager::inGame(InGameState state)
 			currentPlayer = Team::Red;
 			isCheck = false;
 			oneSurrender = false;
+			timeUp = false;
+			redTime = timeLimit;
+			blackTime = timeLimit;
+			clock.restart();
 			state = InGameState::selectChess;
 			break;
 
@@ -192,6 +201,7 @@ void GameManager::inGame(InGameState state)
 
 			//==================================================oneSideWin==================================================	**decide to play anthor game
 		case InGameState::oneSideWin:
+			//surrender
 			if (oneSurrender) {
 				if (this->endGame(teamWin))
 					state = InGameState::start;
@@ -200,6 +210,16 @@ void GameManager::inGame(InGameState state)
 				continue;
 			}
 
+			//times up
+			if (timeUp) {
+				if (this->endGame(teamWin))
+					state = InGameState::start;
+				else
+					return;
+				continue;
+			}
+
+			//normal win
 			teamWin = currentPlayer;
 			if (board.oneSideIsWin(teamWin)) {
 				if (this->endGame(teamWin))
@@ -215,8 +235,30 @@ void GameManager::inGame(InGameState state)
 			break;
 		}
 
+		//clock
+		if (currentPlayer == Team::Red)
+		{
+			redTime = redTime - clock.getElapsedTime();
+		}
+		else
+		{
+			blackTime = blackTime - clock.getElapsedTime();
+		}
+		clock.restart();
+
+		if (redTime <= sf::Time::Zero) {
+			teamWin = Team::Black;
+			timeUp = true;
+			state = InGameState::oneSideWin;
+		}
+		if (blackTime <= sf::Time::Zero) {
+			teamWin = Team::Red;
+			timeUp = true;
+			state = InGameState::oneSideWin;
+		}
+
 		//update
-		switch (viewer.update()) 
+		switch (viewer.update())
 		{
 		case 0:
 			break;
@@ -235,17 +277,13 @@ void GameManager::inGame(InGameState state)
 				break;
 			case 1:
 				std::cout << "continue\n";
+				clock.restart();
 				break;
 			case 2:
 				std::cout << "back to menu\n";
 				return;
 				break;
-			default:
-				break;
 			}
-
-			break;
-		default:
 			break;
 		}
 
@@ -255,6 +293,9 @@ void GameManager::inGame(InGameState state)
 		viewer.drawSprite(boardSprites);
 		viewer.drawCanMovePos(canMovePosCoord);
 		viewer.drawRightSideObject(currentPlayer);
+		viewer.drawTime(redTime, blackTime);
+		
+		//surrender
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			switch (viewer.showSurrender(true, currentPlayer))
 			{
@@ -281,6 +322,7 @@ void GameManager::inGame(InGameState state)
 
 		if (isCheck)
 			viewer.showCheck(teamCheck);
+
 		viewer.display();
 	}
 
@@ -340,6 +382,7 @@ int GameManager::pause()
 		auto boardSprites = this->board.getAllSprite();
 		viewer.drawSprite(boardSprites);
 		viewer.drawRightSideObject(currentPlayer);
+		viewer.drawTime(redTime, blackTime);
 		viewer.showSurrender(false,currentPlayer);
 		if (viewer.mouseClick(sf::Mouse::Left)) {
 			switch (viewer.showPause())
@@ -378,11 +421,26 @@ bool GameManager::confirmSurrender()
 			break;
 		}
 
+		//clock
+		if (currentPlayer == Team::Red)
+		{
+			redTime = redTime - clock.getElapsedTime();
+		}
+		else
+		{
+			blackTime = blackTime - clock.getElapsedTime();
+		}
+		clock.restart();
+
+		if (redTime <= sf::Time::Zero || blackTime <= sf::Time::Zero)
+			return false;
+
 		//draw
 		viewer.clear();
 		auto boardSprites = this->board.getAllSprite();
 		viewer.drawSprite(boardSprites);
 		viewer.drawRightSideObject(currentPlayer);
+		viewer.drawTime(redTime, blackTime);
 		viewer.showSurrender(false, currentPlayer);
 		if (viewer.mouseClick(sf::Mouse::Left)) {
 			switch (viewer.showConfirmSurrender())
