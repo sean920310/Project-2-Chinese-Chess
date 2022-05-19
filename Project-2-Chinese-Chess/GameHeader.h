@@ -33,6 +33,9 @@
 #define CHESS_CHOISE_SCALE_SIZE 0.108f
 #define CHECKBOARD_SCALE_SIZE 0.3f
 
+//one side time limit (minute)
+#define TIMELIMINT 60
+
 enum class Characters
 {
 	General,

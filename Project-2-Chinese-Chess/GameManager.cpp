@@ -62,7 +62,7 @@ GameManager::GameManager() :board(), viewer()
 	onBoard = board.getAllChess();
 	currentPlayer = Team::Red;
 	//one side time limit
-	timeLimit = sf::seconds(60*60);
+	timeLimit = sf::seconds(TIMELIMINT*60);
 }
 
 GameManager::~GameManager()
